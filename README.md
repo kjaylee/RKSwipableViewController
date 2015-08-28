@@ -1,4 +1,4 @@
-RKSwipeBetweenViewControllers
+RKSwipableViewController
 ===========================
 
 UIPageViewController and custom UISegmentedControl synchronized and animated.  Similar to Spotify's "My Music" section.
@@ -8,7 +8,7 @@ __Please check the .h to see how to customize anything__
 ##Pod
 You should not use the pod in most cases, as they don't allow for customizability.  I would recommend dragging the .h and .m files manually into your project
 	
-	pod 'RKSwipeBetweenViewControllers'
+	pod 'RKSwipableViewController'
 	
 
 ##Updates, Questions, and Requests
@@ -25,17 +25,17 @@ __Customizable!__
 
 ![Customizable!](http://i.imgur.com/dl422EL.gif)
 
-(check the RKSwipeBetweenViewControllers.h for *actual* customizable features)
+(check the RKSwipableViewController.h for *actual* customizable features)
 
 ## how to use 
 (check out the provided AppDelegate to see an example):
 
 __Programmatically__ (preferred)
 
-1. Import RKSwipeBetweenViewControllers.h
+1. Import RKSwipableViewController.h
 	
 	```objc
-	#import <RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers.h>
+	#import <RKSwipableViewController/RKSwipableViewController.h>
 	```
 
 2. Initialize a UIPageViewController
@@ -43,10 +43,10 @@ __Programmatically__ (preferred)
 	```objc
 	UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
 	```
-3. Initialize a RKSwipeBetweenViewControllers
+3. Initialize a RKSwipableViewController
 
   	```objc
-	RKSwipeBetweenViewControllers *navigationController = [[RKSwipeBetweenViewControllers alloc]initWithRootViewController:pageController];
+	RKSwipableViewController *navigationController = [[RKSwipableViewController alloc]initWithRootViewController:pageController];
 	```
 4. Add all your ViewControllers (in order) to navigationController.viewControllerArray (try to keep it under 5)
   	
@@ -64,31 +64,31 @@ __Programmatically__ (preferred)
 __StoryBoard__
 (do not use pods for this one)
 
-1. Drop the file into your project and import RKSwipeBetweenViewControllers.h
+1. Drop the file into your project and import RKSwipableViewController.h
 	
 	```objc
-	#import RKSwipeBetweenViewControllers.h
+	#import RKSwipableViewController.h
 	```
 
-2. Embed a UIPageViewController inside a UINavigationController.  Change the class of the to UINavigationController the custom class (RKSwipeBetweenViewControllers)
+2. Embed a UIPageViewController inside a UINavigationController.  Change the class of the to UINavigationController the custom class (RKSwipableViewController)
 3. change the transition style of the pageviewcontroller to scroll (click on the UIPageViewController in storyboard -> attributes inspector -> transition style -> scroll)
 
-4. go to the RKSwipeBetweenViewControllers.m file and use it as your own class now.  Add your view controllers to "viewControllerArray".  See below for various options.
+4. go to the RKSwipableViewController.m file and use it as your own class now.  Add your view controllers to "viewControllerArray".  See below for various options.
 
-	*Programmatically, outside RKSwipeBetweenViewControllers.m*
+	*Programmatically, outside RKSwipableViewController.m*
 	(if this navigation bar isn't the first screen that comes up, or if you want to call it from the delegate)
 	
 	```objc
 	[customNavController.viewControllerArray addObjectsFromArray:@[viewController1, viewController2, viewController3]];
 	```
 	
-	*Programmatically, inside RKSwipeBetweenViewControllers.m*
+	*Programmatically, inside RKSwipableViewController.m*
 	(most cases if your view controllers are programmatically created)
 	
 	```objc
 	[viewControllerArray addObjectsFromArray:@[demo,demo2]];
 	```
-	*storyboard, inside RKSwipeBetweenViewControllers.m*
+	*storyboard, inside RKSwipableViewController.m*
 	(if your viewcontrollers are on the storyboard, but make sure to give them storyboard IDs)
 	
 	```objc
@@ -97,7 +97,7 @@ __StoryBoard__
 	
 	    [viewControllerArray addObject:theController];
 	```
-	*storyboard, outside RKSwipeBetweenViewControllers.m*
+	*storyboard, outside RKSwipableViewController.m*
 	(if your viewcontrollers are on the storyboard, but make sure to give them storyboard IDs)
 	
 	```objc
@@ -117,4 +117,4 @@ Any problems/questions? shoot me a pm
 * Better performance when loading pages
 * Changing layout away from UINavigationController to allow the bar to be at the bottom
 * Bug: adding a MKMapView to a UIViewController in storyboard causes strange visual bug. Adding programmatically is fine
-* Crash on load for UITabBarControllers (resolved): https://github.com/cwRichardKim/RKSwipeBetweenViewControllers/pull/15
+* Crash on load for UITabBarControllers (resolved): https://github.com/cwRichardKim/RKSwipableViewController/pull/15

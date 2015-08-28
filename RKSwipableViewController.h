@@ -1,6 +1,6 @@
 //
-//  RKSwipeBetweenViewControllers.h
-//  RKSwipeBetweenViewControllers
+//  RKSwipableViewController.h
+//  RKSwipableViewController
 //
 //  Created by Richard Kim on 7/24/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.
@@ -60,7 +60,7 @@
  In order to encourage customization, I'm going to try to describe exactly how it works
  
 - Design/Build
-     RKSwipeBetweenViewControllers is a custom UINavigationController
+     RKSwipableViewController is a custom UINavigationController
      with UIButtons as tabs and a UIView as the slider that moves around
      
      The class builds a standard UIPageViewController with the 
@@ -168,7 +168,12 @@
 @property (nonatomic, strong) UIView *selectionBar;
 @property (nonatomic, strong) UIPageViewController *pageController;
 @property (nonatomic, strong) UIScrollView *segmentContainerScrollView;
-@property (nonatomic, strong) NSArray *buttonTextList;
-@property (nonatomic) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
+@property (nonatomic, strong) NSArray *segmentTextList;
+@property (nonatomic, strong) NSArray *segmentButtonArray;    // array of buttons. either segmentTextList or segmentArray should be not nil.
+@property (nonatomic, assign) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
+@property (nonatomic, assign) BOOL isSegmentSizeFixed;
+@property (nonatomic, assign) float segmentButtonWidth;
+@property (nonatomic, assign) float segmentButtonHeight;
+@property (nonatomic, assign) float segmentButtonMarginWidth;   // this margin is in between positions of the selection bar as well.
 
 @end

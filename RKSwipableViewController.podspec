@@ -1,5 +1,5 @@
 #
-#  Be sure to run `pod spec lint RKSwipeBetweenViewControllers.podspec' to ensure this is a
+#  Be sure to run `pod spec lint RKSwipableViewController.podspec' to ensure this is a
 #  valid spec and to remove all comments including this before submitting the spec.
 #
 #  To learn more about Podspec attributes see http://docs.cocoapods.org/specification.html
@@ -15,13 +15,13 @@ Pod::Spec.new do |s|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  s.name         = "RKSwipeBetweenViewControllers"
+  s.name         = "RKSwipableViewController"
   s.version      = "0.1.4"
   s.summary      = "Swipe between ViewControllers like in the Spotify or Twitter app with an interactive Segmented Control in the Navigation Bar"
 
   s.description  = "Similar to Twitter and Spotify, swipe between view controllers and the tabs in the navigation bar changes. -twitter, -spotify, -swipe, -navigation bar, -navigationbar, -between, -view controllers, -viewcontroller, -tab, -objectivec, -ios, -iphone, -xcode"
 
-  s.homepage     = "https://github.com/cwRichardKim/RKSwipeBetweenViewControllers"
+  s.homepage     = "https://github.com/cwRichardKim/RKSwipableViewController"
   s.screenshots  = "http://i.imgur.com/zEsm542.gif"
 
 
@@ -70,7 +70,7 @@ Pod::Spec.new do |s|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  s.source       = { :git => "https://github.com/cwRichardKim/RKSwipeBetweenViewControllers.git", :tag => s.version.to_s }
+  s.source       = { :git => "https://github.com/cwRichardKim/RKSwipableViewController.git", :tag => s.version.to_s }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -81,7 +81,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = 'RKSwipeBetweenViewControllers.h', 'RKSwipeBetweenViewControllers.m'
+  s.source_files  = 'RKSwipableViewController.h', 'RKSwipableViewController.m'
 
   # s.public_header_files = "Classes/**/*.h"
 

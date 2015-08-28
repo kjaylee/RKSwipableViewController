@@ -1,6 +1,6 @@
 //
-//  RKSwipeBetweenViewControllersTests.m
-//  RKSwipeBetweenViewControllersTests
+//  RKSwipableViewControllerTests.m
+//  RKSwipableViewControllerTests
 //
 //  Created by Richard Kim on 7/28/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.
@@ -8,11 +8,11 @@
 
 #import <XCTest/XCTest.h>
 
-@interface RKSwipeBetweenViewControllersTests : XCTestCase
+@interface RKSwipableViewControllerTests : XCTestCase
 
 @end
 
-@implementation RKSwipeBetweenViewControllersTests
+@implementation RKSwipableViewControllerTests
 
 - (void)setUp
 {

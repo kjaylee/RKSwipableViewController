@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  RKSwipeBetweenViewControllers
+//  RKSwipableViewController
 //
 //  Created by Richard Kim on 7/24/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.
@@ -23,8 +23,13 @@
     UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
     RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] initWithRootViewController:pageController];
+    swipableVC.isSegmentSizeFixed = YES;
+    swipableVC.segmentButtonWidth = 80.0f;
     swipableVC.dataSource = self;
     swipableVC.enablesScrollingOverEdge = YES;
+    swipableVC.segmentTextList = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil];
+
+//    swipableVC.buttonArray = ;
 
     self.window.rootViewController = swipableVC;
     [self.window makeKeyAndVisible];

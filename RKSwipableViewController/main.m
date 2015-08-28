@@ -1,6 +1,6 @@
 //
 //  main.m
-//  RKSwipeBetweenViewControllers
+//  RKSwipableViewController
 //
 //  Created by Richard Kim on 7/28/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.

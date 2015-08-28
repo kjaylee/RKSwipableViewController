@@ -1,6 +1,6 @@
 //
-//  RKSwipeBetweenViewControllers.m
-//  RKSwipeBetweenViewControllers
+//  RKSwipableViewController.m
+//  RKSwipableViewController
 //
 //  Created by Richard Kim on 7/24/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.
@@ -27,7 +27,7 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 @interface RKSwipableViewController ()
 
 @property (nonatomic) UIScrollView *pageScrollView;
-@property (nonatomic) NSInteger currentPageIndex;
+@property (nonatomic) long currentPageIndex;
 
 @property (nonatomic) BOOL hasAppearedFlag;         //%%% prevents reloading (maintains state)
 @end
@@ -36,7 +36,8 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 @synthesize selectionBar;
 @synthesize pageController;
 @synthesize segmentContainerScrollView;
-@synthesize buttonTextList;
+@synthesize segmentTextList;
+@synthesize currentPageIndex = _currentPageIndex;
 
 BOOL doStopSegmentScrolling = NO;
 BOOL isPageScrollingFlag = NO;              //%%% prevents scrolling / segment tap crash
@@ -59,9 +60,24 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 
     self.navigationBar.barTintColor = [UIColor colorWithRed:0.01 green:0.05 blue:0.06 alpha:1]; //%%% bartint
     self.navigationBar.translucent = NO;
-    self.currentPageIndex = 0;
+    _currentPageIndex = 0;
     self.hasAppearedFlag = NO;
     self.enablesScrollingOverEdge = NO;
+    self.isSegmentSizeFixed = NO;
+    self.segmentButtonHeight = 44;
+    self.segmentButtonMarginWidth = 10;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    if (!self.hasAppearedFlag) {
+        [self setupPageViewController];
+        [self setupSegmentButtons];
+        self.hasAppearedFlag = YES;
+    }
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
 }
 
 #pragma mark Customizables
@@ -74,33 +90,42 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 
 //%%% sets up the tabs using a loop.  You can take apart the loop to customize individual buttons, but remember to tag the buttons.  (button.tag=0 and the second button.tag=1, etc)
 - (void)setupSegmentButtons {
-//    segmentContainerScrollView = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.navigationBar.frame.size.height)];
-    segmentContainerScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.navigationBar.frame.size.height)];
+    // set sizes of segment container & swipable area (by UIPageController)
+    segmentContainerScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.segmentButtonHeight)];
     NSInteger numControllers = [self.dataSource numberOfViewControllers:self];
-    
-    if (!buttonTextList) {
-         buttonTextList = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil]; //%%%buttontitle
-    }
+    NSAssert(self.segmentTextList != nil && self.segmentTextList.count >= numControllers, @"Count of segment should be >= %ld", numControllers);
 
+    NSAssert(self.segmentTextList != nil || self.segmentButtonArray != nil, @"either segmentTextList or segmentArray should be not nil");
     CGRect baseFrame = CGRectMake(0,0,0,0);
     for (int i=0; i<numControllers; i++) {
-        UIButton *button = [[UIButton alloc] init];
-//        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER+i*(self.view.frame.size.width-2*X_BUFFER)/numControllers-X_OFFSET, Y_BUFFER, (self.view.frame.size.width-2*X_BUFFER)/numControllers, HEIGHT)];
-        [segmentContainerScrollView addSubview:button];
-        button.tag = [self tagByButtonIndex:i]; //%%% IMPORTANT: if you make your own custom buttons, you have to tag them appropriately
-        button.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];//%%% buttoncolors
-        
-        [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        [button setTitle:[buttonTextList objectAtIndex:i] forState:UIControlStateNormal]; //%%%buttontitle
-        CGSize fitSize = [button sizeThatFits:self.view.frame.size];
-        baseFrame.size = fitSize;
-        [button setFrame:baseFrame];
-        baseFrame.origin.x += fitSize.width ;
-        if(i < numControllers - 1)
-            baseFrame.origin.x += X_BUFFER;
+        if(self.segmentTextList != nil) {
+            UIButton *button = [[UIButton alloc] init];
+            button.tag = [self tagByButtonIndex:i]; //%%% IMPORTANT: if you make your own custom buttons, you have to tag them appropriately
+            button.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];//%%% buttoncolors
+            [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+            [button setTitle:[self.segmentTextList objectAtIndex:i] forState:UIControlStateNormal]; //%%%buttontitle
+            CGSize fitSize = [button sizeThatFits:self.view.frame.size];
+            if(self.isSegmentSizeFixed) {
+                fitSize.width = self.segmentButtonWidth;
+            }
+            baseFrame.size = fitSize;
+            [button setFrame:baseFrame];
+            baseFrame.origin.x += fitSize.width + self.segmentButtonMarginWidth;
+            [segmentContainerScrollView addSubview:button];
+        } else if(self.segmentButtonArray != nil) {
+            for(int i=0; i<self.segmentButtonArray.count; i++) {
+                UIButton *button = self.segmentButtonArray[i];
+                button.tag = [self tagByButtonIndex:i];
+                [button removeTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];  // if exists, get rid of it
+                [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                baseFrame.size = button.frame.size;
+                [segmentContainerScrollView addSubview:button];
+                baseFrame.origin.x += button.frame.size.width + self.segmentButtonMarginWidth;
+            }
+        }
     }
 //    baseFrame = CGRectMake(0, 0, baseFrame.origin.x, self.navigationBar.frame.size.height);
-    segmentContainerScrollView.contentSize = CGSizeMake(baseFrame.origin.x, self.navigationBar.frame.size.height);
+    segmentContainerScrollView.contentSize = CGSizeMake(baseFrame.origin.x, self.segmentButtonHeight);
     segmentContainerScrollView.scrollEnabled = YES;
     segmentContainerScrollView.scrollsToTop = NO;
     segmentContainerScrollView.showsHorizontalScrollIndicator = NO;
@@ -168,17 +193,9 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 //generally, this shouldn't be changed unless you know what you're changing
 #pragma mark Setup
 
-- (void)viewWillAppear:(BOOL)animated {
-    if (!self.hasAppearedFlag) {
-        [self setupPageViewController];
-        [self setupSegmentButtons];
-        self.hasAppearedFlag = YES;
-    }
-}
-
 //%%% generic setup stuff for a pageview controller.  Sets up the scrolling style and delegate for the controller
 - (void)setupPageViewController {
-    pageController = (UIPageViewController*)self.topViewController;
+    pageController = (UIPageViewController *)self.topViewController;
     pageController.delegate = self;
     pageController.dataSource = self;
     UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:0];
@@ -208,7 +225,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 //eg: if you're on page 1 and you click tab 3, then it shows you page 2 and then page 3
 - (void)tapSegmentButtonAction:(UIButton *)button {
     if (!isPageScrollingFlag) {
-        NSInteger currentButtonTag = [self tagByButtonIndex:self.currentPageIndex];
+        NSInteger currentButtonTag = [self tagByButtonIndex:_currentPageIndex];
         __weak typeof(self) weakSelf = self;
         //%%% check to see if you're going left -> right or right -> left
         if (button.tag > currentButtonTag) {
@@ -223,7 +240,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
                     //%%% if the action finishes scrolling (i.e. the user doesn't stop it in the middle),
                     //then it updates the page that it's currently on
                     if (complete) {
-                        [weakSelf updateCurrentPageIndex:buttonIndex];
+                        [weakSelf setCurrentPageIndex:buttonIndex];
                         if(tag == button.tag)
                             doStopSegmentScrolling = NO;
                     }
@@ -239,7 +256,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
                 UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:buttonIndex];
                 [pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete){
                     if (complete) {
-                        [weakSelf updateCurrentPageIndex:buttonIndex];
+                        [weakSelf setCurrentPageIndex:buttonIndex];
                         if(tag == button.tag)
                             doStopSegmentScrolling = NO;
                     }
@@ -251,8 +268,8 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 
 //%%% makes sure the nav bar is always aware of what page you're on
 //in reference to the array of view controllers you gave
-- (void)updateCurrentPageIndex:(int)newIndex {
-    self.currentPageIndex = newIndex;
+- (void)setCurrentPageIndex:(long)newCurrentPageIndex {
+    _currentPageIndex = newCurrentPageIndex;
 }
 
 //%%% method is called when any of the pages moves.
@@ -261,14 +278,14 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     CGFloat xFromCenter = self.view.frame.size.width - scrollView.contentOffset.x; //%%% positive for right swipe, negative for left
     CGFloat ratio = -1 * xFromCenter / self.view.frame.size.width;
     CGFloat absRatio = fabs(xFromCenter / self.view.frame.size.width);
-    UIView *selectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex]];
+    UIView *selectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:_currentPageIndex]];
     UIView *maybeSelectedButton = selectedButton;
     long vcCount = [self.dataSource numberOfViewControllers:self];
-    NSAssert(0 <= self.currentPageIndex && self.currentPageIndex < vcCount, @"currentPageIndex over boundary: %ld", self.currentPageIndex);
+    NSAssert(0 <= _currentPageIndex && _currentPageIndex < vcCount, @"currentPageIndex over boundary: %ld", _currentPageIndex);
     CGRect buttonFrame = selectedButton.frame;
     CGRect selectionBarFrame = selectionBar.frame;
     selectionBarFrame.origin.x = buttonFrame.origin.x;
-    if(ratio < 0 && self.currentPageIndex == 0) {
+    if(ratio < 0 && _currentPageIndex == 0) {
         // over to left
         if(isSegmentScrolledOverBoundary) {
             maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:(vcCount-1)]];
@@ -276,7 +293,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
         } else {
             selectionBarFrame.origin.x += absRatio * (-buttonFrame.size.width);
         }
-    } else if(ratio > 0 && self.currentPageIndex == vcCount-1) {
+    } else if(ratio > 0 && _currentPageIndex == vcCount-1) {
         // over to right
         if(isSegmentScrolledOverBoundary) {
             maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
@@ -286,9 +303,9 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
         }
     } else {
         if(ratio > 0)
-            maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex + 1]];
+            maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:_currentPageIndex + 1]];
         if(ratio < 0)
-            maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex - 1]];
+            maybeSelectedButton = [self.segmentContainerScrollView viewWithTag:[self tagByButtonIndex:_currentPageIndex - 1]];
         selectionBarFrame.origin.x += absRatio * (maybeSelectedButton.frame.origin.x - buttonFrame.origin.x);
     }
     selectionBarFrame.size.width = (1-absRatio) * buttonFrame.size.width + absRatio * maybeSelectedButton.frame.size.width;
@@ -328,16 +345,19 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 }
 
 
+
 //%%% the delegate functions for UIPageViewController.
 //Pretty standard, but generally, don't touch this.
-#pragma mark UIPageViewController Delegate Functions
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
+#pragma mark - UIPageViewController Delegate
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+    if (completed) {
+        UIViewController *shownVC = [pageViewController.viewControllers lastObject];
+        [self setCurrentPageIndex:[self.dataSource swipableViewController:self indexOfViewController:shownVC]];
+    }
 }
 
 
-#pragma mark - Page View Controller Data Source
+#pragma mark - UIPageViewController Data Source
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     long vcCount = [self.dataSource numberOfViewControllers:self];
     long index = [self.dataSource swipableViewController:self indexOfViewController:viewController];
@@ -362,12 +382,6 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     return [self.dataSource swipableViewController:self viewControllerAt:index + 1];
 }
 
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
-    if (completed) {
-        UIViewController *shownVC = [pageViewController.viewControllers lastObject];
-        self.currentPageIndex = [self.dataSource swipableViewController:self indexOfViewController:shownVC];
-    }
-}
 
 #pragma mark - Scroll View Delegate
 
@@ -380,12 +394,12 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     UIView *scrollTargetButton = nil;
     UIView *scrollSourceButton = nil;
     // to left at first page
-    if(targetContentOffset->x == 0 && self.currentPageIndex == 0) {
+    if(targetContentOffset->x == 0 && _currentPageIndex == 0) {
         scrollSourceButton = [segmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
         scrollTargetButton = [segmentContainerScrollView viewWithTag:[self tagByButtonIndex:(vcCount-1)]];
     }
     // to right at last page
-    if(targetContentOffset->x >= scrollView.frame.size.width*1.5 && self.currentPageIndex == (vcCount-1)) {
+    if(targetContentOffset->x >= scrollView.frame.size.width*1.5 && _currentPageIndex == (vcCount-1)) {
         scrollSourceButton = [segmentContainerScrollView viewWithTag:[self tagByButtonIndex:(vcCount-1)]];
         scrollTargetButton = [segmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
     }

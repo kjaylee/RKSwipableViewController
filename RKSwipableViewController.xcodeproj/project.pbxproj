@@ -19,38 +19,38 @@
 		992F23AC1985BD6300320CAA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 992F238B1985BD6300320CAA /* Foundation.framework */; };
 		992F23AD1985BD6300320CAA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 992F238F1985BD6300320CAA /* UIKit.framework */; };
 		992F23B51985BD6400320CAA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 992F23B31985BD6300320CAA /* InfoPlist.strings */; };
-		992F23B71985BD6400320CAA /* RKSwipeBetweenViewControllersTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 992F23B61985BD6400320CAA /* RKSwipeBetweenViewControllersTests.m */; };
+		992F23B71985BD6400320CAA /* RKSwipableViewControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 992F23B61985BD6400320CAA /* RKSwipableViewControllerTests.m */; };
 		992F23C21985BDD500320CAA /* RKSwipableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 992F23C11985BDD500320CAA /* RKSwipableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		992F23AE1985BD6300320CAA /* PBXContainerItemProxy */ = {
+		AC9711E21B91226F0029ED16 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 992F23801985BD6300320CAA /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 992F23871985BD6300320CAA;
-			remoteInfo = RKSwipeBetweenViewControllers;
+			remoteInfo = RKSwipableViewController;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		992F23881985BD6300320CAA /* RKSwipeBetweenViewControllers.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RKSwipeBetweenViewControllers.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		992F23881985BD6300320CAA /* RKSwipableViewController.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RKSwipableViewController.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		992F238B1985BD6300320CAA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		992F238D1985BD6300320CAA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		992F238F1985BD6300320CAA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		992F23931985BD6300320CAA /* RKSwipeBetweenViewControllers-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RKSwipeBetweenViewControllers-Info.plist"; sourceTree = "<group>"; };
+		992F23931985BD6300320CAA /* RKSwipableViewController-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RKSwipableViewController-Info.plist"; sourceTree = "<group>"; };
 		992F23951985BD6300320CAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		992F23971985BD6300320CAA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		992F23991985BD6300320CAA /* RKSwipeBetweenViewControllers-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RKSwipeBetweenViewControllers-Prefix.pch"; sourceTree = "<group>"; };
+		992F23991985BD6300320CAA /* RKSwipableViewController-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RKSwipableViewController-Prefix.pch"; sourceTree = "<group>"; };
 		992F239A1985BD6300320CAA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		992F239B1985BD6300320CAA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		992F239E1985BD6300320CAA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		992F23A31985BD6300320CAA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		992F23A91985BD6300320CAA /* RKSwipeBetweenViewControllersTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RKSwipeBetweenViewControllersTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		992F23A91985BD6300320CAA /* RKSwipableViewControllerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RKSwipableViewControllerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		992F23AA1985BD6300320CAA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		992F23B21985BD6300320CAA /* RKSwipeBetweenViewControllersTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RKSwipeBetweenViewControllersTests-Info.plist"; sourceTree = "<group>"; };
+		992F23B21985BD6300320CAA /* RKSwipableViewControllerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RKSwipableViewControllerTests-Info.plist"; sourceTree = "<group>"; };
 		992F23B41985BD6300320CAA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		992F23B61985BD6400320CAA /* RKSwipeBetweenViewControllersTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RKSwipeBetweenViewControllersTests.m; sourceTree = "<group>"; };
+		992F23B61985BD6400320CAA /* RKSwipableViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RKSwipableViewControllerTests.m; sourceTree = "<group>"; };
 		992F23C01985BDD500320CAA /* RKSwipableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKSwipableViewController.h; sourceTree = SOURCE_ROOT; };
 		992F23C11985BDD500320CAA /* RKSwipableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKSwipableViewController.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -82,8 +82,8 @@
 		992F237F1985BD6300320CAA = {
 			isa = PBXGroup;
 			children = (
-				992F23911985BD6300320CAA /* RKSwipeBetweenViewControllers */,
-				992F23B01985BD6300320CAA /* RKSwipeBetweenViewControllersTests */,
+				992F23911985BD6300320CAA /* RKSwipableViewController */,
+				992F23B01985BD6300320CAA /* RKSwipableViewControllerTests */,
 				992F238A1985BD6300320CAA /* Frameworks */,
 				992F23891985BD6300320CAA /* Products */,
 			);
@@ -92,8 +92,8 @@
 		992F23891985BD6300320CAA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				992F23881985BD6300320CAA /* RKSwipeBetweenViewControllers.app */,
-				992F23A91985BD6300320CAA /* RKSwipeBetweenViewControllersTests.xctest */,
+				992F23881985BD6300320CAA /* RKSwipableViewController.app */,
+				992F23A91985BD6300320CAA /* RKSwipableViewControllerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -109,7 +109,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		992F23911985BD6300320CAA /* RKSwipeBetweenViewControllers */ = {
+		992F23911985BD6300320CAA /* RKSwipableViewController */ = {
 			isa = PBXGroup;
 			children = (
 				992F239A1985BD6300320CAA /* AppDelegate.h */,
@@ -120,33 +120,35 @@
 				992F23C11985BDD500320CAA /* RKSwipableViewController.m */,
 				992F23921985BD6300320CAA /* Supporting Files */,
 			);
-			path = RKSwipeBetweenViewControllers;
+			name = RKSwipableViewController;
+			path = RKSwipableViewController;
 			sourceTree = "<group>";
 		};
 		992F23921985BD6300320CAA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				992F23931985BD6300320CAA /* RKSwipeBetweenViewControllers-Info.plist */,
+				992F23931985BD6300320CAA /* RKSwipableViewController-Info.plist */,
 				992F23941985BD6300320CAA /* InfoPlist.strings */,
 				992F23971985BD6300320CAA /* main.m */,
-				992F23991985BD6300320CAA /* RKSwipeBetweenViewControllers-Prefix.pch */,
+				992F23991985BD6300320CAA /* RKSwipableViewController-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		992F23B01985BD6300320CAA /* RKSwipeBetweenViewControllersTests */ = {
+		992F23B01985BD6300320CAA /* RKSwipableViewControllerTests */ = {
 			isa = PBXGroup;
 			children = (
-				992F23B61985BD6400320CAA /* RKSwipeBetweenViewControllersTests.m */,
+				992F23B61985BD6400320CAA /* RKSwipableViewControllerTests.m */,
 				992F23B11985BD6300320CAA /* Supporting Files */,
 			);
-			path = RKSwipeBetweenViewControllersTests;
+			name = RKSwipableViewControllerTests;
+			path = RKSwipableViewControllerTests;
 			sourceTree = "<group>";
 		};
 		992F23B11985BD6300320CAA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				992F23B21985BD6300320CAA /* RKSwipeBetweenViewControllersTests-Info.plist */,
+				992F23B21985BD6300320CAA /* RKSwipableViewControllerTests-Info.plist */,
 				992F23B31985BD6300320CAA /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
@@ -155,9 +157,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		992F23871985BD6300320CAA /* RKSwipeBetweenViewControllers */ = {
+		992F23871985BD6300320CAA /* RKSwipableViewController */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 992F23BA1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipeBetweenViewControllers" */;
+			buildConfigurationList = 992F23BA1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipableViewController" */;
 			buildPhases = (
 				992F23841985BD6300320CAA /* Sources */,
 				992F23851985BD6300320CAA /* Frameworks */,
@@ -167,14 +169,14 @@
 			);
 			dependencies = (
 			);
-			name = RKSwipeBetweenViewControllers;
-			productName = RKSwipeBetweenViewControllers;
-			productReference = 992F23881985BD6300320CAA /* RKSwipeBetweenViewControllers.app */;
+			name = RKSwipableViewController;
+			productName = RKSwipableViewController;
+			productReference = 992F23881985BD6300320CAA /* RKSwipableViewController.app */;
 			productType = "com.apple.product-type.application";
 		};
-		992F23A81985BD6300320CAA /* RKSwipeBetweenViewControllersTests */ = {
+		992F23A81985BD6300320CAA /* RKSwipableViewControllerTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 992F23BD1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipeBetweenViewControllersTests" */;
+			buildConfigurationList = 992F23BD1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipableViewControllerTests" */;
 			buildPhases = (
 				992F23A51985BD6300320CAA /* Sources */,
 				992F23A61985BD6300320CAA /* Frameworks */,
@@ -183,11 +185,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				992F23AF1985BD6300320CAA /* PBXTargetDependency */,
+				AC9711E31B91226F0029ED16 /* PBXTargetDependency */,
 			);
-			name = RKSwipeBetweenViewControllersTests;
-			productName = RKSwipeBetweenViewControllersTests;
-			productReference = 992F23A91985BD6300320CAA /* RKSwipeBetweenViewControllersTests.xctest */;
+			name = RKSwipableViewControllerTests;
+			productName = RKSwipableViewControllerTests;
+			productReference = 992F23A91985BD6300320CAA /* RKSwipableViewControllerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -207,7 +209,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 992F23831985BD6300320CAA /* Build configuration list for PBXProject "RKSwipeBetweenViewControllers" */;
+			buildConfigurationList = 992F23831985BD6300320CAA /* Build configuration list for PBXProject "RKSwipableViewController" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -220,8 +222,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				992F23871985BD6300320CAA /* RKSwipeBetweenViewControllers */,
-				992F23A81985BD6300320CAA /* RKSwipeBetweenViewControllersTests */,
+				992F23871985BD6300320CAA /* RKSwipableViewController */,
+				992F23A81985BD6300320CAA /* RKSwipableViewControllerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -262,17 +264,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				992F23B71985BD6400320CAA /* RKSwipeBetweenViewControllersTests.m in Sources */,
+				992F23B71985BD6400320CAA /* RKSwipableViewControllerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		992F23AF1985BD6300320CAA /* PBXTargetDependency */ = {
+		AC9711E31B91226F0029ED16 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 992F23871985BD6300320CAA /* RKSwipeBetweenViewControllers */;
-			targetProxy = 992F23AE1985BD6300320CAA /* PBXContainerItemProxy */;
+			target = 992F23871985BD6300320CAA /* RKSwipableViewController */;
+			targetProxy = AC9711E21B91226F0029ED16 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -381,8 +383,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Prefix.pch";
-				INFOPLIST_FILE = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Info.plist";
+				GCC_PREFIX_HEADER = "RKSwipableViewController/RKSwipableViewController-Prefix.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/RKSwipableViewController/RKSwipableViewController-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -396,8 +398,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Prefix.pch";
-				INFOPLIST_FILE = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Info.plist";
+				GCC_PREFIX_HEADER = "RKSwipableViewController/RKSwipableViewController-Prefix.pch";
+				INFOPLIST_FILE = "$(SRCROOT)/RKSwipableViewController/RKSwipableViewController-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
@@ -407,7 +409,7 @@
 		992F23BE1985BD6400320CAA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/RKSwipeBetweenViewControllers.app/RKSwipeBetweenViewControllers";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -415,14 +417,14 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Prefix.pch";
+				GCC_PREFIX_HEADER = "RKSwipableViewController/RKSwipableViewController-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "RKSwipeBetweenViewControllersTests/RKSwipeBetweenViewControllersTests-Info.plist";
+				INFOPLIST_FILE = "RKSwipableViewControllerTests/RKSwipableViewControllerTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RKSwipableViewController.app/RKSwipableViewController";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Debug;
@@ -430,7 +432,7 @@
 		992F23BF1985BD6400320CAA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/RKSwipeBetweenViewControllers.app/RKSwipeBetweenViewControllers";
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -438,10 +440,10 @@
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "RKSwipeBetweenViewControllers/RKSwipeBetweenViewControllers-Prefix.pch";
-				INFOPLIST_FILE = "RKSwipeBetweenViewControllersTests/RKSwipeBetweenViewControllersTests-Info.plist";
+				GCC_PREFIX_HEADER = "RKSwipableViewController/RKSwipableViewController-Prefix.pch";
+				INFOPLIST_FILE = "RKSwipableViewControllerTests/RKSwipableViewControllerTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/RKSwipableViewController.app/RKSwipableViewController";
 				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
@@ -449,7 +451,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		992F23831985BD6300320CAA /* Build configuration list for PBXProject "RKSwipeBetweenViewControllers" */ = {
+		992F23831985BD6300320CAA /* Build configuration list for PBXProject "RKSwipableViewController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				992F23B81985BD6400320CAA /* Debug */,
@@ -458,7 +460,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		992F23BA1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipeBetweenViewControllers" */ = {
+		992F23BA1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipableViewController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				992F23BB1985BD6400320CAA /* Debug */,
@@ -467,7 +469,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		992F23BD1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipeBetweenViewControllersTests" */ = {
+		992F23BD1985BD6400320CAA /* Build configuration list for PBXNativeTarget "RKSwipableViewControllerTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				992F23BE1985BD6400320CAA /* Debug */,
