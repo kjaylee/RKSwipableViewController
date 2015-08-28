@@ -153,13 +153,14 @@
 
 @end
 
-@interface RKSwipeBetweenViewControllers : UINavigationController <UIPageViewControllerDelegate,UIPageViewControllerDataSource,UIScrollViewDelegate>
+@interface RKSwipeBetweenViewControllers : UINavigationController <UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate>
 
 @property (nonatomic, strong) NSMutableArray *viewControllerArray;
 @property (nonatomic, weak) id<RKSwipeBetweenViewControllersDelegate> navDelegate;
 @property (nonatomic, strong) UIView *selectionBar;
-@property (nonatomic, strong)UIPageViewController *pageController;
-@property (nonatomic, strong)UIView *navigationView;
-@property (nonatomic, strong)NSArray *buttonText;
+@property (nonatomic, strong) UIPageViewController *pageController;
+@property (nonatomic, strong) UIScrollView *fragmentContainerScrollView;
+@property (nonatomic, strong) NSArray *buttonTextList;
+@property (nonatomic) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
 
 @end

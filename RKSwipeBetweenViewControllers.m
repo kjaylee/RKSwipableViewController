@@ -9,6 +9,8 @@
 
 #import "RKSwipeBetweenViewControllers.h"
 
+#define TAG_BUTTON_INDEX 3000
+
 //%%% customizeable button attributes
 CGFloat X_BUFFER = 0.0; //%%% the number of pixels on either side of the segment
 CGFloat Y_BUFFER = 14.0; //%%% number of pixels on top of the segment
@@ -26,17 +28,19 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 
 @property (nonatomic) UIScrollView *pageScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
-@property (nonatomic) BOOL isPageScrollingFlag; //%%% prevents scrolling / segment tap crash
-@property (nonatomic) BOOL hasAppearedFlag; //%%% prevents reloading (maintains state)
 
+@property (nonatomic) BOOL hasAppearedFlag;         //%%% prevents reloading (maintains state)
 @end
 
 @implementation RKSwipeBetweenViewControllers
 @synthesize viewControllerArray;
 @synthesize selectionBar;
 @synthesize pageController;
-@synthesize navigationView;
-@synthesize buttonText;
+@synthesize fragmentContainerScrollView;
+@synthesize buttonTextList;
+
+BOOL doStopFragmentScrolling = NO;
+BOOL isPageScrollingFlag = NO;      //%%% prevents scrolling / segment tap crash
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -51,12 +55,14 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 {
     [super viewDidLoad];
 
+    isPageScrollingFlag = NO;
+
     self.navigationBar.barTintColor = [UIColor colorWithRed:0.01 green:0.05 blue:0.06 alpha:1]; //%%% bartint
     self.navigationBar.translucent = NO;
-    viewControllerArray = [[NSMutableArray alloc]init];
+    viewControllerArray = [[NSMutableArray alloc] init];
     self.currentPageIndex = 0;
-    self.isPageScrollingFlag = NO;
     self.hasAppearedFlag = NO;
+    self.enablesScrollingOverEdge = NO;
 }
 
 #pragma mark Customizables
@@ -69,27 +75,43 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 
 //%%% sets up the tabs using a loop.  You can take apart the loop to customize individual buttons, but remember to tag the buttons.  (button.tag=0 and the second button.tag=1, etc)
 -(void)setupSegmentButtons {
-    navigationView = [[UIView alloc]initWithFrame:CGRectMake(0,0,self.view.frame.size.width,self.navigationBar.frame.size.height)];
-    
+//    fragmentContainerScrollView = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.navigationBar.frame.size.height)];
+    fragmentContainerScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.navigationBar.frame.size.height)];
     NSInteger numControllers = [viewControllerArray count];
     
-    if (!buttonText) {
-         buttonText = [[NSArray alloc]initWithObjects: @"first",@"second",@"third",@"fourth",@"etc",@"etc",@"etc",@"etc",nil]; //%%%buttontitle
+    if (!buttonTextList) {
+         buttonTextList = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil]; //%%%buttontitle
     }
-    
-    for (int i = 0; i<numControllers; i++) {
-        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER+i*(self.view.frame.size.width-2*X_BUFFER)/numControllers-X_OFFSET, Y_BUFFER, (self.view.frame.size.width-2*X_BUFFER)/numControllers, HEIGHT)];
-        [navigationView addSubview:button];
-        
-        button.tag = i; //%%% IMPORTANT: if you make your own custom buttons, you have to tag them appropriately
+
+    CGRect baseFrame = CGRectMake(0,0,0,0);
+    for (int i=0; i<numControllers; i++) {
+        UIButton *button = [[UIButton alloc] init];
+//        UIButton *button = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER+i*(self.view.frame.size.width-2*X_BUFFER)/numControllers-X_OFFSET, Y_BUFFER, (self.view.frame.size.width-2*X_BUFFER)/numControllers, HEIGHT)];
+        [fragmentContainerScrollView addSubview:button];
+        button.tag = [self tagByButtonIndex:i]; //%%% IMPORTANT: if you make your own custom buttons, you have to tag them appropriately
         button.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];//%%% buttoncolors
         
         [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-        
-        [button setTitle:[buttonText objectAtIndex:i] forState:UIControlStateNormal]; //%%%buttontitle
+        [button setTitle:[buttonTextList objectAtIndex:i] forState:UIControlStateNormal]; //%%%buttontitle
+        CGSize fitSize = [button sizeThatFits:self.view.frame.size];
+        baseFrame.size = fitSize;
+        [button setFrame:baseFrame];
+        baseFrame.origin.x += fitSize.width ;
+        if(i < numControllers - 1)
+            baseFrame.origin.x += X_BUFFER;
     }
-    
-    pageController.navigationController.navigationBar.topItem.titleView = navigationView;
+//    baseFrame = CGRectMake(0, 0, baseFrame.origin.x, self.navigationBar.frame.size.height);
+    fragmentContainerScrollView.contentSize = CGSizeMake(baseFrame.origin.x, self.navigationBar.frame.size.height);
+    fragmentContainerScrollView.scrollEnabled = YES;
+    fragmentContainerScrollView.scrollsToTop = NO;
+    fragmentContainerScrollView.showsHorizontalScrollIndicator = NO;
+    fragmentContainerScrollView.showsVerticalScrollIndicator = NO;
+    fragmentContainerScrollView.alwaysBounceVertical = NO;
+    fragmentContainerScrollView.minimumZoomScale = 1;
+    fragmentContainerScrollView.maximumZoomScale = 1;
+    fragmentContainerScrollView.clipsToBounds = NO;
+
+    pageController.navigationController.navigationBar.topItem.titleView = fragmentContainerScrollView;
     
     //%%% example custom buttons example:
     /*
@@ -125,12 +147,24 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 
 //%%% sets up the selection bar under the buttons on the navigation bar
 -(void)setupSelector {
-    selectionBar = [[UIView alloc]initWithFrame:CGRectMake(X_BUFFER-X_OFFSET, SELECTOR_Y_BUFFER,(self.view.frame.size.width-2*X_BUFFER)/[viewControllerArray count], SELECTOR_HEIGHT)];
+//    selectionBar = [[UIView alloc] initWithFrame:CGRectMake(X_BUFFER-X_OFFSET, SELECTOR_Y_BUFFER,(self.view.frame.size.width-2*X_BUFFER)/[viewControllerArray count], SELECTOR_HEIGHT)];
+    UIView *firstButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
+    selectionBar = [[UIView alloc] initWithFrame:CGRectMake(0,SELECTOR_Y_BUFFER,firstButton.frame.size.width,SELECTOR_HEIGHT)];
     selectionBar.backgroundColor = [UIColor greenColor]; //%%% sbcolor
     selectionBar.alpha = 0.8; //%%% sbalpha
-    [navigationView addSubview:selectionBar];
+    [fragmentContainerScrollView addSubview:selectionBar];
 }
 
+- (long)tagByButtonIndex:(long)buttonIndex {
+    if(buttonIndex < 0)
+        return TAG_BUTTON_INDEX + buttonIndex + [self viewControllerArray].count;
+    else
+        return TAG_BUTTON_INDEX + buttonIndex;
+}
+
+- (int)buttonIndexByTag:(int)tag {
+    return tag - TAG_BUTTON_INDEX;
+}
 
 //generally, this shouldn't be changed unless you know what you're changing
 #pragma mark Setup
@@ -172,36 +206,40 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 //but it also has to animate the other pages to make it feel like you're crossing a 2d expansion,
 //so there's a loop that shows every view controller in the array up to the one you selected
 //eg: if you're on page 1 and you click tab 3, then it shows you page 2 and then page 3
--(void)tapSegmentButtonAction:(UIButton *)button {
-    
-    if (!self.isPageScrollingFlag) {
-        
-        NSInteger tempIndex = self.currentPageIndex;
-        
+- (void)tapSegmentButtonAction:(UIButton *)button {
+    if (!isPageScrollingFlag) {
+        NSInteger currentButtonTag = [self tagByButtonIndex:self.currentPageIndex];
         __weak typeof(self) weakSelf = self;
-        
         //%%% check to see if you're going left -> right or right -> left
-        if (button.tag > tempIndex) {
-            
+        if (button.tag > currentButtonTag) {
+            doStopFragmentScrolling = YES;
             //%%% scroll through all the objects between the two points
-            for (int i = (int)tempIndex+1; i<=button.tag; i++) {
-                [pageController setViewControllers:@[[viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete){
-                    
+            for (int tag = (int)currentButtonTag+1; tag<=button.tag; tag++) {
+                int buttonIndex = [self buttonIndexByTag:tag];
+                [pageController setViewControllers:@[[viewControllerArray objectAtIndex:buttonIndex]]
+                                         direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete)
+                {
                     //%%% if the action finishes scrolling (i.e. the user doesn't stop it in the middle),
                     //then it updates the page that it's currently on
                     if (complete) {
-                        [weakSelf updateCurrentPageIndex:i];
+                        [weakSelf updateCurrentPageIndex:buttonIndex];
+                        if(tag == button.tag)
+                            doStopFragmentScrolling = NO;
                     }
                 }];
             }
         }
         
         //%%% this is the same thing but for going right -> left
-        else if (button.tag < tempIndex) {
-            for (int i = (int)tempIndex-1; i >= button.tag; i--) {
-                [pageController setViewControllers:@[[viewControllerArray objectAtIndex:i]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete){
+        else if (button.tag < currentButtonTag) {
+            doStopFragmentScrolling = YES;
+            for (int tag = (int)currentButtonTag-1; tag >= button.tag; tag--) {
+                int buttonIndex = [self buttonIndexByTag:tag];
+                [pageController setViewControllers:@[[viewControllerArray objectAtIndex:buttonIndex]] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete){
                     if (complete) {
-                        [weakSelf updateCurrentPageIndex:i];
+                        [weakSelf updateCurrentPageIndex:buttonIndex];
+                        if(tag == button.tag)
+                            doStopFragmentScrolling = NO;
                     }
                 }];
             }
@@ -218,14 +256,72 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 //%%% method is called when any of the pages moves.
 //It extracts the xcoordinate from the center point and instructs the selection bar to move accordingly
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    CGFloat xFromCenter = self.view.frame.size.width-scrollView.contentOffset.x; //%%% positive for right swipe, negative for left
-    
-    //%%% checks to see what page you are on and adjusts the xCoor accordingly.
-    //i.e. if you're on the second page, it makes sure that the bar starts from the frame.origin.x of the
-    //second tab instead of the beginning
-    NSInteger xCoor = X_BUFFER+selectionBar.frame.size.width*self.currentPageIndex-X_OFFSET;
-    
-    selectionBar.frame = CGRectMake(xCoor-xFromCenter/[viewControllerArray count], selectionBar.frame.origin.y, selectionBar.frame.size.width, selectionBar.frame.size.height);
+    CGFloat xFromCenter = self.view.frame.size.width - scrollView.contentOffset.x; //%%% positive for right swipe, negative for left
+    CGFloat ratio = -1 * xFromCenter / self.view.frame.size.width;
+    CGFloat absRatio = fabs(xFromCenter / self.view.frame.size.width);
+    UIView *selectedButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex]];
+    UIView *maybeSelectedButton = selectedButton;
+    NSAssert(0 <= self.currentPageIndex && self.currentPageIndex < self.viewControllerArray.count, @"currentPageIndex over boundary: %d", self.currentPageIndex);
+    CGRect buttonFrame = selectedButton.frame;
+    CGRect selectionBarFrame = selectionBar.frame;
+    selectionBarFrame.origin.x = buttonFrame.origin.x;
+    if(ratio < 0 && self.currentPageIndex == 0) {
+        // over to left
+        if(isFragmentsScrolledOverBoundary) {
+            maybeSelectedButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:(self.viewControllerArray.count-1)]];
+            selectionBarFrame.origin.x = selectedButton.frame.origin.x + pow(absRatio,2) * (maybeSelectedButton.frame.origin.x);
+        } else {
+            selectionBarFrame.origin.x += absRatio * (-buttonFrame.size.width);
+        }
+    } else if(ratio > 0 && self.currentPageIndex == self.viewControllerArray.count - 1) {
+        // over to right
+        if(isFragmentsScrolledOverBoundary) {
+            maybeSelectedButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
+            selectionBarFrame.origin.x = selectedButton.frame.origin.x - (pow(absRatio,2) * selectedButton.frame.origin.x);
+        } else {
+            selectionBarFrame.origin.x += absRatio * (buttonFrame.size.width);
+        }
+    } else {
+        if(ratio > 0)
+            maybeSelectedButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex + 1]];
+        if(ratio < 0)
+            maybeSelectedButton = [self.fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:self.currentPageIndex - 1]];
+        selectionBarFrame.origin.x += absRatio * (maybeSelectedButton.frame.origin.x - buttonFrame.origin.x);
+    }
+    selectionBarFrame.size.width = (1-absRatio) * buttonFrame.size.width + absRatio * maybeSelectedButton.frame.size.width;
+    selectionBar.frame = selectionBarFrame;
+//    //%%% checks to see what page you are on and adjusts the xCoor accordingly.
+//    //i.e. if you're on the second page, it makes sure that the bar starts from the frame.origin.x of the
+//    //second tab instead of the beginning
+//    NSInteger xCoor = X_BUFFER+selectionBar.frame.size.width*self.currentPageIndex-X_OFFSET;
+//    
+//    selectionBar.frame = CGRectMake(xCoor-xFromCenter/[viewControllerArray count], selectionBar.frame.origin.y, selectionBar.frame.size.width, selectionBar.frame.size.height);
+
+    // Forcely scrolls fragment container(=menu bar) according to selectionBar's frame.
+    if(!doStopFragmentScrolling) {
+        CGPoint contentOffset = self.fragmentContainerScrollView.contentOffset;
+        CGRect scrollViewFrame = self.fragmentContainerScrollView.frame;
+        float leftX = selectionBarFrame.origin.x;
+        float rightX = selectionBarFrame.origin.x + selectionBarFrame.size.width;
+        // scroll to left
+        if(leftX < contentOffset.x) {
+            if(leftX < 0)
+                contentOffset.x = 0;
+            else
+                contentOffset.x = leftX;
+            self.fragmentContainerScrollView.contentOffset = contentOffset;
+        }
+        // scroll to right
+        if(rightX > contentOffset.x + scrollViewFrame.size.width) {
+            if(rightX > self.fragmentContainerScrollView.contentSize.width) {
+                contentOffset.x = self.fragmentContainerScrollView.contentSize.width - scrollViewFrame.size.width;
+            }
+            else {
+                contentOffset.x = selectionBarFrame.origin.x + selectionBarFrame.size.width - scrollViewFrame.size.width;
+            }
+            self.fragmentContainerScrollView.contentOffset = contentOffset;
+        }
+    }
 }
 
 
@@ -244,7 +340,10 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
     NSInteger index = [viewControllerArray indexOfObject:viewController];
 
     if ((index == NSNotFound) || (index == 0)) {
-        return nil;
+        if (self.enablesScrollingOverEdge)
+            return [viewControllerArray lastObject];
+        else
+            return nil;
     }
     
     index--;
@@ -260,12 +359,15 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
     index++;
     
     if (index == [viewControllerArray count]) {
-        return nil;
+        if (self.enablesScrollingOverEdge)
+            return [viewControllerArray firstObject];
+        else
+            return nil;
     }
     return [viewControllerArray objectAtIndex:index];
 }
 
--(void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed {
     if (completed) {
         self.currentPageIndex = [viewControllerArray indexOfObject:[pageViewController.viewControllers lastObject]];
     }
@@ -274,11 +376,32 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 #pragma mark - Scroll View Delegate
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    self.isPageScrollingFlag = YES;
+    isPageScrollingFlag = YES;
+}
+
+bool isFragmentsScrolledOverBoundary = NO;
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset NS_AVAILABLE_IOS(5_0) {
+    UIView *scrollTargetButton = nil;
+    UIView *scrollSourceButton = nil;
+    // to left at first page
+    if(targetContentOffset->x == 0 && self.currentPageIndex == 0) {
+        scrollSourceButton = [fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
+        scrollTargetButton = [fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:(viewControllerArray.count - 1)]];
+    }
+    // to right at last page
+    if(targetContentOffset->x >= scrollView.frame.size.width*1.5 && self.currentPageIndex == (self.viewControllerArray.count - 1)) {
+        scrollSourceButton = [fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:(viewControllerArray.count - 1)]];
+        scrollTargetButton = [fragmentContainerScrollView viewWithTag:[self tagByButtonIndex:0]];
+    }
+    if(scrollSourceButton && scrollTargetButton) {
+        isFragmentsScrolledOverBoundary = YES;
+    }
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    self.isPageScrollingFlag = NO;
+    isPageScrollingFlag = NO;
+    isFragmentsScrolledOverBoundary = NO;
+    doStopFragmentScrolling = NO;
 }
 
 @end

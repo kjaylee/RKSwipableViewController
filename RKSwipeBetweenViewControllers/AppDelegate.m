@@ -22,15 +22,28 @@
     RKSwipeBetweenViewControllers *navigationController = [[RKSwipeBetweenViewControllers alloc]initWithRootViewController:pageController];
     
     //%%% DEMO CONTROLLERS
-    UIViewController *demo = [[UIViewController alloc]init];
-    UIViewController *demo2 = [[UIViewController alloc]init];
-    UIViewController *demo3 = [[UIViewController alloc]init];
-    UIViewController *demo4 = [[UIViewController alloc]init];
-    demo.view.backgroundColor = [UIColor redColor];
-    demo2.view.backgroundColor = [UIColor whiteColor];
-    demo3.view.backgroundColor = [UIColor grayColor];
-    demo4.view.backgroundColor = [UIColor orangeColor];
-    [navigationController.viewControllerArray addObjectsFromArray:@[demo,demo2,demo3,demo4]];
+    NSArray *vcList = @[[[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        [[UIViewController alloc]init],
+                        ];
+    NSArray *colorList = @[[UIColor colorWithWhite:1 alpha:1],
+                           [UIColor colorWithWhite:0.9 alpha:1],
+                           [UIColor colorWithWhite:0.8 alpha:1],
+                           [UIColor colorWithWhite:0.7 alpha:1],
+                           [UIColor colorWithWhite:0.6 alpha:1],
+                           [UIColor colorWithWhite:0.5 alpha:1],
+                           [UIColor colorWithWhite:0.4 alpha:1],
+                           [UIColor colorWithWhite:0.3 alpha:1],
+                           ];
+    for(int i=0; i<vcList.count; i++) {
+        [(UIViewController *)vcList[i] view].backgroundColor = colorList[i];
+    }
+    [navigationController.viewControllerArray addObjectsFromArray:vcList];
     
     self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
