@@ -1,6 +1,16 @@
 RKSwipableViewController
 ===========================
 
+    ```
+- Note from Kenial: This class is forked from https://github.com/cwRichardKim/RKSwipeBetweenViewControllers, 
+but it has been changed for dynamic page creation - I thought original class would be more suitable static content, 
+so decided to make it as another repo. However, with a respect for the original author, I will leave prefix RK for him :)
+
+Updating README is needed...
+    ```
+
+
+
 UIPageViewController and custom UISegmentedControl synchronized and animated.  Similar to Spotify's "My Music" section.
 
 __Please check the .h to see how to customize anything__

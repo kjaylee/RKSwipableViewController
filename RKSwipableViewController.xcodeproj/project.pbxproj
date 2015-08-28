@@ -53,6 +53,8 @@
 		992F23B61985BD6400320CAA /* RKSwipableViewControllerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RKSwipableViewControllerTests.m; sourceTree = "<group>"; };
 		992F23C01985BDD500320CAA /* RKSwipableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RKSwipableViewController.h; sourceTree = SOURCE_ROOT; };
 		992F23C11985BDD500320CAA /* RKSwipableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKSwipableViewController.m; sourceTree = SOURCE_ROOT; };
+		AC9711E41B9125EB0029ED16 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		AC9711E51B9125EB0029ED16 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,6 +84,8 @@
 		992F237F1985BD6300320CAA = {
 			isa = PBXGroup;
 			children = (
+				AC9711E41B9125EB0029ED16 /* LICENSE */,
+				AC9711E51B9125EB0029ED16 /* README.md */,
 				992F23911985BD6300320CAA /* RKSwipableViewController */,
 				992F23B01985BD6300320CAA /* RKSwipableViewControllerTests */,
 				992F238A1985BD6300320CAA /* Frameworks */,
@@ -120,7 +124,6 @@
 				992F23C11985BDD500320CAA /* RKSwipableViewController.m */,
 				992F23921985BD6300320CAA /* Supporting Files */,
 			);
-			name = RKSwipableViewController;
 			path = RKSwipableViewController;
 			sourceTree = "<group>";
 		};
@@ -141,7 +144,6 @@
 				992F23B61985BD6400320CAA /* RKSwipableViewControllerTests.m */,
 				992F23B11985BD6300320CAA /* Supporting Files */,
 			);
-			name = RKSwipableViewControllerTests;
 			path = RKSwipableViewControllerTests;
 			sourceTree = "<group>";
 		};
