@@ -8,7 +8,10 @@
 
 #import "AppDelegate.h"
 
-#import "RKSwipeBetweenViewControllers.h"
+#import "RKSwipableViewController.h"
+
+@interface AppDelegate () <RKSwipableViewControllerDataSource>
+@end
 
 @implementation AppDelegate
 
@@ -19,33 +22,11 @@
     
     UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
-    RKSwipeBetweenViewControllers *navigationController = [[RKSwipeBetweenViewControllers alloc]initWithRootViewController:pageController];
-    
-    //%%% DEMO CONTROLLERS
-    NSArray *vcList = @[[[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        [[UIViewController alloc]init],
-                        ];
-    NSArray *colorList = @[[UIColor colorWithWhite:1 alpha:1],
-                           [UIColor colorWithWhite:0.9 alpha:1],
-                           [UIColor colorWithWhite:0.8 alpha:1],
-                           [UIColor colorWithWhite:0.7 alpha:1],
-                           [UIColor colorWithWhite:0.6 alpha:1],
-                           [UIColor colorWithWhite:0.5 alpha:1],
-                           [UIColor colorWithWhite:0.4 alpha:1],
-                           [UIColor colorWithWhite:0.3 alpha:1],
-                           ];
-    for(int i=0; i<vcList.count; i++) {
-        [(UIViewController *)vcList[i] view].backgroundColor = colorList[i];
-    }
-    [navigationController.viewControllerArray addObjectsFromArray:vcList];
-    
-    self.window.rootViewController = navigationController;
+    RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] initWithRootViewController:pageController];
+    swipableVC.dataSource = self;
+    swipableVC.enablesScrollingOverEdge = YES;
+
+    self.window.rootViewController = swipableVC;
     [self.window makeKeyAndVisible];
     return YES;
 }
@@ -75,6 +56,45 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark - RKSwipableViewControllerDataSource
+NSMutableArray *_vcArray;
+#define NUMBER_OF_SWIPABLE_VIEWS 8
+- (long)numberOfViewControllers:(RKSwipableViewController *)swipableViewController {
+    return NUMBER_OF_SWIPABLE_VIEWS;
+}
+
+- (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController viewControllerAt:(long)index {
+    if(_vcArray == nil) {
+        _vcArray = [[NSMutableArray alloc] init];
+        for(int i=0; i<NUMBER_OF_SWIPABLE_VIEWS; i++) {
+            [_vcArray addObject:[NSNull null]];
+        }
+    }
+
+    if(_vcArray[index] == [NSNull null]) {
+        UIViewController *vc = [[UIViewController alloc] init];
+        vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/8.0) alpha:1];
+        UILabel *label = [[UILabel alloc] initWithFrame:vc.view.frame];
+        label.text = [NSString stringWithFormat:@"%ld", index+1];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.font = [UIFont systemFontOfSize:36];
+        [vc.view addSubview:label];
+        _vcArray[index] = vc;
+    }
+    return _vcArray[index];
+}
+
+- (long)swipableViewController:(RKSwipableViewController *)swipableViewController indexOfViewController:(UIViewController *)viewController {
+    if(_vcArray == nil) {
+        _vcArray = [[NSMutableArray alloc] initWithCapacity:8];
+    }
+    for(long i=0; i<_vcArray.count; i++) {
+        if(_vcArray[i] == viewController)
+            return i;
+    }
+    return NSNotFound;
 }
 
 @end

@@ -149,17 +149,25 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol RKSwipeBetweenViewControllersDelegate <NSObject>
+@class RKSwipableViewController;
+
+
+@protocol RKSwipableViewControllerDataSource <NSObject>
+
+@required
+- (long)numberOfViewControllers:(RKSwipableViewController *)swipableViewController;
+- (long)swipableViewController:(RKSwipableViewController *)swipableViewController indexOfViewController:(UIViewController *)viewController;
+- (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController viewControllerAt:(long)index;
 
 @end
 
-@interface RKSwipeBetweenViewControllers : UINavigationController <UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate>
 
-@property (nonatomic, strong) NSMutableArray *viewControllerArray;
-@property (nonatomic, weak) id<RKSwipeBetweenViewControllersDelegate> navDelegate;
+@interface RKSwipableViewController : UINavigationController <UIPageViewControllerDelegate, UIPageViewControllerDataSource, UIScrollViewDelegate>
+
+@property (nonatomic, weak) id<RKSwipableViewControllerDataSource> dataSource;
 @property (nonatomic, strong) UIView *selectionBar;
 @property (nonatomic, strong) UIPageViewController *pageController;
-@property (nonatomic, strong) UIScrollView *fragmentContainerScrollView;
+@property (nonatomic, strong) UIScrollView *segmentContainerScrollView;
 @property (nonatomic, strong) NSArray *buttonTextList;
 @property (nonatomic) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
 
