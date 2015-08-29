@@ -1,7 +1,7 @@
 RKSwipableViewController
 ===========================
 
-    ```
+    ```plain
 - Note from Kenial: This class is forked from https://github.com/cwRichardKim/RKSwipeBetweenViewControllers, 
 but it has been changed for dynamic page creation - I thought original class would be more suitable static content, 
 so decided to make it as another repo. However, with a respect for the original author, I will leave prefix RK for him :)
