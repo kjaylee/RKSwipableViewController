@@ -20,9 +20,7 @@
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
     
-    UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
-    
-    RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] initWithRootViewController:pageController];
+    RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
     swipableVC.isSegmentSizeFixed = YES;
     swipableVC.segmentButtonWidth = 80.0f;
     swipableVC.dataSource = self;
