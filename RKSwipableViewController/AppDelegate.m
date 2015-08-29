@@ -22,10 +22,11 @@
     
     RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
     swipableVC.isSegmentSizeFixed = YES;
-    swipableVC.segmentButtonWidth = 80.0f;
+    swipableVC.segmentButtonWidth = 60.0f;
     swipableVC.dataSource = self;
     swipableVC.enablesScrollingOverEdge = YES;
     swipableVC.segmentTextList = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil];
+    swipableVC.doUpdateNavigationTitleWithSwipedViewController = YES;
 
 //    swipableVC.buttonArray = ;
 
@@ -84,6 +85,7 @@ NSMutableArray *_vcArray;
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:36];
         [vc.view addSubview:label];
+        vc.title = label.text;
         _vcArray[index] = vc;
     }
     return _vcArray[index];

@@ -175,5 +175,8 @@
 @property (nonatomic, assign) float segmentButtonWidth;
 @property (nonatomic, assign) float segmentButtonHeight;
 @property (nonatomic, assign) float segmentButtonMarginWidth;   // this margin is in between positions of the selection bar as well.
+@property (nonatomic, assign) BOOL doUpdateNavigationTitleWithSwipedViewController;
+
+- (void)setNavigationBarTitle:(NSString *)title;
 
 @end

@@ -48,6 +48,10 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         // Custom initialization
+        self.enablesScrollingOverEdge = NO;
+        self.isSegmentSizeFixed = NO;
+        self.segmentButtonHeight = 44;
+        self.segmentButtonMarginWidth = 10;
     }
     return self;
 }
@@ -59,7 +63,6 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                                                                            navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                          options:nil];
-    pageController.title = @"RKSwipableViewController Demo";
     _pageController = pageController;
     [self setViewControllers:@[pageController]];
     isPageScrollingFlag = NO;
@@ -67,19 +70,19 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 //    self.navigationBar.barTintColor = [UIColor colorWithRed:0.01 green:0.05 blue:0.06 alpha:1]; //%%% bartint
 //    self.navigationBar.translucent = NO;
 
-    _currentPageIndex = 0;
     self.hasAppearedFlag = NO;
-    self.enablesScrollingOverEdge = NO;
-    self.isSegmentSizeFixed = NO;
-    self.segmentButtonHeight = 44;
-    self.segmentButtonMarginWidth = 10;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     if (!self.hasAppearedFlag) {
         [self setupPageViewController];
         [self setupSegmentButtons];
+        [self syncScrollView];
         self.hasAppearedFlag = YES;
+        self.currentPageIndex = 0;
+        UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:_currentPageIndex];
+        [_pageController setViewControllers:@[vcToBeShown]
+                                  direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
     }
 }
 
@@ -277,9 +280,8 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 - (void)setupPageViewController {
     _pageController.delegate = self;
     _pageController.dataSource = self;
-    UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:0];
-    [_pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
-    [self syncScrollView];
+//    UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:0];
+//    [_pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:nil];
 }
 
 //%%% this allows us to get information back from the scrollview, namely the coordinate information that we can link to the selection bar.
@@ -349,6 +351,9 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 //in reference to the array of view controllers you gave
 - (void)setCurrentPageIndex:(long)newCurrentPageIndex {
     _currentPageIndex = newCurrentPageIndex;
+    if(self.doUpdateNavigationTitleWithSwipedViewController) {
+        [self setNavigationBarTitle:[self.dataSource swipableViewController:self viewControllerAt:newCurrentPageIndex].title];
+    }
 }
 
 //%%% method is called when any of the pages moves.
@@ -424,6 +429,10 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 }
 
 
+#pragma mark - ETC
+- (void)setNavigationBarTitle:(NSString *)title {
+    _pageController.title = title;
+}
 
 //%%% the delegate functions for UIPageViewController.
 //Pretty standard, but generally, don't touch this.
