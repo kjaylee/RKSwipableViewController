@@ -80,9 +80,9 @@ NSMutableArray *_vcArray;
 
     if(_vcArray[index] == [NSNull null]) {
         UIViewController *vc = [[UIViewController alloc] init];
-        vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/8.0) alpha:1];
+        vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/16.0) alpha:1];
         UILabel *label = [[UILabel alloc] initWithFrame:vc.view.frame];
-        label.text = [NSString stringWithFormat:@"%ld", index+1];
+        label.text = swipableViewController.segmentTextList[index];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:36];
         [vc.view addSubview:label];

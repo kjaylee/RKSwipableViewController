@@ -6,8 +6,13 @@ RKSwipableViewController
 but it has been changed for dynamic page creation - I thought original class would be more suitable static content, 
 so decided to make it as another repo. However, with a respect for the original author, I will leave prefix RK for him :)
 
+And added some features like looping and scrollable fragment:
+
+![demo](http://i.imgur.com/aUalMKK.gif)
+
 Updating README is needed...
     ```
+
 
 
 
