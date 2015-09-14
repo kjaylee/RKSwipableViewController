@@ -36,40 +36,59 @@ CGFloat X_OFFSET = 8.0; //%%% for some reason there's a little bit of a glitchy 
 @synthesize selectionBar;
 @synthesize pageController = _pageController;
 @synthesize segmentContainerScrollView;
-@synthesize segmentTextList;
 @synthesize currentPageIndex = _currentPageIndex;
+@synthesize swipableViewControllers = _swipableViewControllers;
 
 BOOL doStopSegmentScrolling = NO;
 BOOL isPageScrollingFlag = NO;              //%%% prevents scrolling / segment tap crash
 bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundary," determines whether scrolling end-to-end or not)
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+#pragma mark Properties
+- (NSMutableArray *)swipableViewControllers {
+    if(_swipableViewControllers == nil)
+        _swipableViewControllers = [[NSMutableArray alloc] init];
+    long numberofVC = [self.dataSource numberOfViewControllers:self];
+    while(_swipableViewControllers.count < numberofVC) {
+        [_swipableViewControllers addObject:[NSNull null]];
+    }
+    return _swipableViewControllers;
+}
+
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
-        self.enablesScrollingOverEdge = NO;
-        self.isSegmentSizeFixed = NO;
-        self.segmentButtonHeight = 44;
-        self.segmentButtonMarginWidth = 10;
+    if(self) {
+        [self initialize];
     }
     return self;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+// for revived from storyboard
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    self = [super initWithCoder:aDecoder];
+    if(self) {
+        [self initialize];
+    }
+    return self;
+}
 
+- (void)initialize {
+    self.enablesScrollingOverEdge = NO;
+    self.isSegmentSizeFixed = NO;
+    self.segmentButtonHeight = 44;
+    self.segmentButtonMarginWidth = 10;
     UIPageViewController *pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
                                                                            navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
                                                                                          options:nil];
     _pageController = pageController;
     [self setViewControllers:@[pageController]];
     isPageScrollingFlag = NO;
+}
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
 //    self.navigationBar.barTintColor = [UIColor colorWithRed:0.01 green:0.05 blue:0.06 alpha:1]; //%%% bartint
 //    self.navigationBar.translucent = NO;
-
     self.hasAppearedFlag = NO;
 }
 
@@ -93,6 +112,9 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 - (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [self setupConstraints];
+
+    // workaround: prevent from crashing on iOS 7
+    [self.view layoutIfNeeded];
 }
 
 
@@ -109,16 +131,18 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     // set sizes of segment container & swipable area (by UIPageController)
     segmentContainerScrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0,0,self.view.frame.size.width, self.segmentButtonHeight)];
     NSInteger numControllers = [self.dataSource numberOfViewControllers:self];
-    NSAssert(self.segmentTextList != nil || self.segmentButtonArray != nil, @"either segmentTextList or segmentArray should be not nil");
+    NSAssert([self.dataSource respondsToSelector:@selector(swipableViewController:segmentTextAt:)] ||
+             [self.dataSource respondsToSelector:@selector(swipableViewController:segmentButtonAt:)],
+             @"RKSwipableViewControllerDataSource should return texts of segments or buttons");
     CGRect baseFrame = CGRectMake(0,0,0,0);
     for (int i=0; i<numControllers; i++) {
-        if(self.segmentTextList != nil) {
-            NSAssert(self.segmentTextList.count >= numControllers, @"Count of segment text should be >= %ld", numControllers);
+        if([self.dataSource respondsToSelector:@selector(swipableViewController:segmentTextAt:)]) {
+            NSString *segmentTitle = [self.dataSource swipableViewController:self segmentTextAt:i];
             UIButton *button = [[UIButton alloc] init];
             button.tag = [self tagByButtonIndex:i]; //%%% IMPORTANT: if you make your own custom buttons, you have to tag them appropriately
             button.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];//%%% buttoncolors
-            [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-            [button setTitle:[self.segmentTextList objectAtIndex:i] forState:UIControlStateNormal]; //%%%buttontitle
+            [button addTarget:self action:@selector(tapSegmentButton:) forControlEvents:UIControlEventTouchUpInside];
+            [button setTitle:segmentTitle forState:UIControlStateNormal]; //%%%buttontitle
             CGSize fitSize = [button sizeThatFits:self.view.frame.size];
             if(self.isSegmentSizeFixed) {
                 fitSize.width = self.segmentButtonWidth;
@@ -127,13 +151,12 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
             [button setFrame:baseFrame];
             baseFrame.origin.x += fitSize.width + self.segmentButtonMarginWidth;
             [segmentContainerScrollView addSubview:button];
-        } else if(self.segmentButtonArray != nil) {
-            NSAssert(self.segmentButtonArray.count >= numControllers, @"Count of segment button should be >= %ld", numControllers);
-            for(int i=0; i<self.segmentButtonArray.count; i++) {
-                UIButton *button = self.segmentButtonArray[i];
+        } if([self.dataSource respondsToSelector:@selector(swipableViewController:segmentButtonAt:)]) {
+            for(int i=0; i<numControllers; i++) {
+                UIButton *button = [self.dataSource swipableViewController:self segmentButtonAt:i];
                 button.tag = [self tagByButtonIndex:i];
-                [button removeTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];  // if exists, get rid of it
-                [button addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
+                [button removeTarget:self action:@selector(tapSegmentButton:) forControlEvents:UIControlEventTouchUpInside];  // if exists, get rid of it
+                [button addTarget:self action:@selector(tapSegmentButton:) forControlEvents:UIControlEventTouchUpInside];
                 baseFrame.size = button.frame.size;
                 [segmentContainerScrollView addSubview:button];
                 baseFrame.origin.x += button.frame.size.width + self.segmentButtonMarginWidth;
@@ -149,39 +172,12 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     segmentContainerScrollView.alwaysBounceVertical = NO;
     segmentContainerScrollView.minimumZoomScale = 1;
     segmentContainerScrollView.maximumZoomScale = 1;
-    segmentContainerScrollView.clipsToBounds = NO;
+    segmentContainerScrollView.clipsToBounds = YES;
+    segmentContainerScrollView.backgroundColor = [UIColor blackColor];
 
     //_pageController.navigationController.navigationBar.topItem.titleView = segmentContainerScrollView;
     [self.view addSubview:segmentContainerScrollView];
 
-    //%%% example custom buttons example:
-    /*
-    NSInteger width = (self.view.frame.size.width-(2*X_BUFFER))/3;
-    UIButton *leftButton = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER, Y_BUFFER, width, HEIGHT)];
-    UIButton *middleButton = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER+width, Y_BUFFER, width, HEIGHT)];
-    UIButton *rightButton = [[UIButton alloc]initWithFrame:CGRectMake(X_BUFFER+2*width, Y_BUFFER, width, HEIGHT)];
-    
-    [self.navigationBar addSubview:leftButton];
-    [self.navigationBar addSubview:middleButton];
-    [self.navigationBar addSubview:rightButton];
-    
-    leftButton.tag = 0;
-    middleButton.tag = 1;
-    rightButton.tag = 2;
-    
-    leftButton.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];
-    middleButton.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];
-    rightButton.backgroundColor = [UIColor colorWithRed:0.03 green:0.07 blue:0.08 alpha:1];
-    
-    [leftButton addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [middleButton addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    [rightButton addTarget:self action:@selector(tapSegmentButtonAction:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [leftButton setTitle:@"left" forState:UIControlStateNormal];
-    [middleButton setTitle:@"middle" forState:UIControlStateNormal];
-    [rightButton setTitle:@"right" forState:UIControlStateNormal];
-     */
-    
     [self setupSelector];
 }
 
@@ -203,74 +199,76 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
         return TAG_BUTTON_INDEX + buttonIndex;
 }
 
-- (int)buttonIndexByTag:(int)tag {
+- (int)buttonIndexByTag:(long)tag {
     return tag - TAG_BUTTON_INDEX;
 }
 
 - (void)setupConstraints {
-    segmentContainerScrollView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:
-     @[[NSLayoutConstraint constraintWithItem:segmentContainerScrollView
-                                    attribute:NSLayoutAttributeTop
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.navigationBar
-                                    attribute:NSLayoutAttributeBottom
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
-                                    attribute:NSLayoutAttributeLeft
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.navigationBar
-                                    attribute:NSLayoutAttributeLeft
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
-                                    attribute:NSLayoutAttributeRight
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.navigationBar
-                                    attribute:NSLayoutAttributeRight
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
-                                    attribute:NSLayoutAttributeHeight
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:nil
-                                    attribute:NSLayoutAttributeNotAnAttribute
-                                   multiplier:1
-                                     constant:self.segmentButtonHeight],
-       ]];
+    if(_pageController == self.visibleViewController) {
+        segmentContainerScrollView.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:
+         @[[NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+                                        attribute:NSLayoutAttributeTop
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.navigationBar
+                                        attribute:NSLayoutAttributeBottom
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+                                        attribute:NSLayoutAttributeLeft
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.navigationBar
+                                        attribute:NSLayoutAttributeLeft
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+                                        attribute:NSLayoutAttributeRight
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.navigationBar
+                                        attribute:NSLayoutAttributeRight
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+                                        attribute:NSLayoutAttributeHeight
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:nil
+                                        attribute:NSLayoutAttributeNotAnAttribute
+                                       multiplier:1
+                                         constant:self.segmentButtonHeight],
+           ]];
 
-    _pageController.view.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addConstraints:
-     @[[NSLayoutConstraint constraintWithItem:self.pageController.view
-                                    attribute:NSLayoutAttributeTop
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.segmentContainerScrollView
-                                    attribute:NSLayoutAttributeBottom
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:self.pageController.view
-                                    attribute:NSLayoutAttributeLeft
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.view
-                                    attribute:NSLayoutAttributeLeft
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:self.pageController.view
-                                    attribute:NSLayoutAttributeRight
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.view
-                                    attribute:NSLayoutAttributeRight
-                                   multiplier:1
-                                     constant:0],
-       [NSLayoutConstraint constraintWithItem:self.pageController.view
-                                    attribute:NSLayoutAttributeBottom
-                                    relatedBy:NSLayoutRelationEqual
-                                       toItem:self.view
-                                    attribute:NSLayoutAttributeBottom
-                                   multiplier:1
-                                     constant:0],
-       ]];
+        _pageController.view.translatesAutoresizingMaskIntoConstraints = NO;
+        [self.view addConstraints:
+         @[[NSLayoutConstraint constraintWithItem:self.pageController.view
+                                        attribute:NSLayoutAttributeTop
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.segmentContainerScrollView
+                                        attribute:NSLayoutAttributeBottom
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:self.pageController.view
+                                        attribute:NSLayoutAttributeLeft
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.view
+                                        attribute:NSLayoutAttributeLeft
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:self.pageController.view
+                                        attribute:NSLayoutAttributeRight
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.view
+                                        attribute:NSLayoutAttributeRight
+                                       multiplier:1
+                                         constant:0],
+           [NSLayoutConstraint constraintWithItem:self.pageController.view
+                                        attribute:NSLayoutAttributeBottom
+                                        relatedBy:NSLayoutRelationEqual
+                                           toItem:self.view
+                                        attribute:NSLayoutAttributeBottom
+                                       multiplier:1
+                                         constant:0],
+           ]];
+    }
 }
 
 //generally, this shouldn't be changed unless you know what you're changing
@@ -299,47 +297,83 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 // have a particular performance thing in mind
 
 #pragma mark Movement
+- (void)tapSegmentButtonIndex:(long)index animated:(BOOL)animated {
+    for(UIView *v in self.segmentContainerScrollView.subviews) {
+        if([self buttonIndexByTag:v.tag] == index) {
+            UIButton *button = (UIButton *)v;
+            [self tapSegmentButton:button animated:animated];
+        }
+    }
+}
 
 //%%% when you tap one of the buttons, it shows that page,
 //but it also has to animate the other pages to make it feel like you're crossing a 2d expansion,
 //so there's a loop that shows every view controller in the array up to the one you selected
 //eg: if you're on page 1 and you click tab 3, then it shows you page 2 and then page 3
-- (void)tapSegmentButtonAction:(UIButton *)button {
+- (void)tapSegmentButton:(UIButton *)button {
+    [self tapSegmentButton:button animated:YES];
+}
+
+- (void)tapSegmentButton:(UIButton *)button animated:(BOOL)animated {
+    NSInteger currentButtonTag = [self tagByButtonIndex:_currentPageIndex];
+    __weak typeof(self) weakSelf = self;
     if (!isPageScrollingFlag) {
-        NSInteger currentButtonTag = [self tagByButtonIndex:_currentPageIndex];
-        __weak typeof(self) weakSelf = self;
         //%%% check to see if you're going left -> right or right -> left
         if (button.tag > currentButtonTag) {
-            doStopSegmentScrolling = YES;
-            //%%% scroll through all the objects between the two points
-            for (int tag = (int)currentButtonTag+1; tag<=button.tag; tag++) {
-                int buttonIndex = [self buttonIndexByTag:tag];
+            if(animated) {
+                doStopSegmentScrolling = YES;
+                //%%% scroll through all the objects between the two points
+                for (int tag = (int)currentButtonTag+1; tag<=button.tag; tag++) {
+                    int buttonIndex = [self buttonIndexByTag:tag];
+                    UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:buttonIndex];
+                    [_pageController setViewControllers:@[vcToBeShown]
+                                              direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished)
+                    {
+                        //%%% if the action finishes scrolling (i.e. the user doesn't stop it in the middle),
+                        //then it updates the page that it's currently on
+                        if (finished) {
+                            [weakSelf setCurrentPageIndex:buttonIndex];
+                            if(tag == button.tag)
+                                doStopSegmentScrolling = NO;
+                        }
+                    }];
+                }
+            } else {
+                doStopSegmentScrolling = NO;
+                int buttonIndex = [self buttonIndexByTag:button.tag];
                 UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:buttonIndex];
                 [_pageController setViewControllers:@[vcToBeShown]
-                                          direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL complete)
-                {
-                    //%%% if the action finishes scrolling (i.e. the user doesn't stop it in the middle),
-                    //then it updates the page that it's currently on
-                    if (complete) {
-                        [weakSelf setCurrentPageIndex:buttonIndex];
-                        if(tag == button.tag)
-                            doStopSegmentScrolling = NO;
-                    }
-                }];
+                                          direction:UIPageViewControllerNavigationDirectionForward animated:NO completion:^(BOOL finished) {
+                                              if (finished) {
+                                                  [weakSelf setCurrentPageIndex:buttonIndex];
+                                                  [weakSelf scrollViewDidScroll:weakSelf.pageScrollView];
+                                              }
+                                          }];
             }
         }
-        
         //%%% this is the same thing but for going right -> left
         else if (button.tag < currentButtonTag) {
-            doStopSegmentScrolling = YES;
-            for (int tag = (int)currentButtonTag-1; tag >= button.tag; tag--) {
-                int buttonIndex = [self buttonIndexByTag:tag];
+            if(animated) {
+                doStopSegmentScrolling = YES;
+                for (int tag = (int)currentButtonTag-1; tag >= button.tag; tag--) {
+                    int buttonIndex = [self buttonIndexByTag:tag];
+                    UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:buttonIndex];
+                    [_pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete){
+                        if (complete) {
+                            [weakSelf setCurrentPageIndex:buttonIndex];
+                            if(tag == button.tag)
+                                doStopSegmentScrolling = NO;
+                        }
+                    }];
+                }
+            } else {
+                doStopSegmentScrolling = NO;
+                int buttonIndex = [self buttonIndexByTag:button.tag];
                 UIViewController *vcToBeShown = [self.dataSource swipableViewController:self viewControllerAt:buttonIndex];
-                [_pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionReverse animated:YES completion:^(BOOL complete){
+                [_pageController setViewControllers:@[vcToBeShown] direction:UIPageViewControllerNavigationDirectionReverse animated:NO completion:^(BOOL complete){
                     if (complete) {
                         [weakSelf setCurrentPageIndex:buttonIndex];
-                        if(tag == button.tag)
-                            doStopSegmentScrolling = NO;
+                        [weakSelf scrollViewDidScroll:weakSelf.pageScrollView];
                     }
                 }];
             }
@@ -443,7 +477,6 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
         [self setCurrentPageIndex:[self.dataSource swipableViewController:self indexOfViewController:shownVC]];
     }
 }
-
 
 #pragma mark - UIPageViewController Data Source
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {

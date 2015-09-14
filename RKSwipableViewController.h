@@ -159,6 +159,10 @@
 - (long)swipableViewController:(RKSwipableViewController *)swipableViewController indexOfViewController:(UIViewController *)viewController;
 - (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController viewControllerAt:(long)index;
 
+@optional
+- (NSString *)swipableViewController:(RKSwipableViewController *)swipableViewController segmentTextAt:(long)index;
+- (UIButton *)swipableViewController:(RKSwipableViewController *)swipableViewController segmentButtonAt:(long)index;
+
 @end
 
 
@@ -168,15 +172,15 @@
 @property (nonatomic, strong) UIView *selectionBar;
 @property (nonatomic, strong) UIPageViewController *pageController;
 @property (nonatomic, strong) UIScrollView *segmentContainerScrollView;
-@property (nonatomic, strong) NSArray *segmentTextList;
-@property (nonatomic, strong) NSArray *segmentButtonArray;    // array of buttons. either segmentTextList or segmentArray should be not nil.
 @property (nonatomic, assign) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
 @property (nonatomic, assign) BOOL isSegmentSizeFixed;
 @property (nonatomic, assign) float segmentButtonWidth;
 @property (nonatomic, assign) float segmentButtonHeight;
 @property (nonatomic, assign) float segmentButtonMarginWidth;   // this margin is in between positions of the selection bar as well.
 @property (nonatomic, assign) BOOL doUpdateNavigationTitleWithSwipedViewController;
+@property (nonatomic, strong) NSMutableArray *swipableViewControllers;
 
 - (void)setNavigationBarTitle:(NSString *)title;
+- (void)tapSegmentButtonIndex:(long)index animated:(BOOL)animated;
 
 @end
