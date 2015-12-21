@@ -170,17 +170,25 @@
 
 @property (nonatomic, weak) id<RKSwipableViewControllerDataSource> dataSource;
 @property (nonatomic, strong) UIView *selectionBar;
+@property (nonatomic, strong) UIColor *selectionBarColor;
 @property (nonatomic, strong) UIPageViewController *pageController;
 @property (nonatomic, strong) UIScrollView *segmentContainerScrollView;
+@property (nonatomic, strong) UIColor *segmentContainerScrollViewBackgroundColor;
 @property (nonatomic, assign) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
 @property (nonatomic, assign) BOOL isSegmentSizeFixed;
 @property (nonatomic, assign) float segmentButtonWidth;
+@property (nonatomic, assign) float segmentButtonMinimumWidth;
 @property (nonatomic, assign) float segmentButtonHeight;
 @property (nonatomic, assign) float segmentButtonMarginWidth;   // this margin is in between positions of the selection bar as well.
+@property (nonatomic, assign) float segmentButtonEdgeMarginWidth;
+@property (nonatomic, assign) BOOL shouldSelectedButtonCentered;
+@property (nonatomic, strong) UIColor *segmentButtonTextColor;
+@property (nonatomic, strong) UIColor *segmentButtonBackgroundColor;
 @property (nonatomic, assign) BOOL doUpdateNavigationTitleWithSwipedViewController;
 @property (nonatomic, strong) NSMutableArray *swipableViewControllers;
 
 - (void)setNavigationBarTitle:(NSString *)title;
 - (void)tapSegmentButtonIndex:(long)index animated:(BOOL)animated;
+- (void)setupConstraints;
 
 @end
