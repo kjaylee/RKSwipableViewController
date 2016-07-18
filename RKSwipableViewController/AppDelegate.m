@@ -5,6 +5,8 @@
 //  Created by Richard Kim on 7/24/14.
 //  Copyright (c) 2014 Richard Kim. All rights reserved.
 //
+//  Modified by Kenial Lee on 7/17/16
+
 
 #import "AppDelegate.h"
 
@@ -15,23 +17,39 @@
 
 @implementation AppDelegate
 
+NSMutableArray *_vcArray;
+NSArray *_vcMenuTitles;
+#define NUMBER_OF_SWIPABLE_VIEWS 8
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
     self.window = [[UIWindow alloc] initWithFrame:UIScreen.mainScreen.bounds];
-    
+
+    _vcArray = [[NSMutableArray alloc] init];
+    for(int i=0; i<NUMBER_OF_SWIPABLE_VIEWS; i++) {
+        [_vcArray addObject:[NSNull null]];
+    }
+    _vcMenuTitles = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil];
+
     RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
-    swipableVC.isSegmentSizeFixed = YES;
-    swipableVC.segmentButtonWidth = 60.0f;
+    swipableVC.isSegmentSizeFixed = NO;
+    swipableVC.segmentButtonMinimumWidth = 50.0f;
+    swipableVC.segmentButtonMarginWidth = 25.0f;
+    swipableVC.segmentButtonEdgeMarginWidth = 10.0f;
+    swipableVC.shouldSelectedButtonCentered = YES;
+    swipableVC.segmentButtonHeight = 60.0f;
+    swipableVC.segmentButtonBackgroundColor = [UIColor blackColor];
+    swipableVC.segmentButtonTextColor = [UIColor whiteColor];
+    swipableVC.selectionBarColor = [UIColor greenColor];
+    swipableVC.segmentContainerScrollViewBackgroundColor = [UIColor blackColor];
     swipableVC.dataSource = self;
     swipableVC.enablesScrollingOverEdge = YES;
-    swipableVC.segmentTextList = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil];
     swipableVC.doUpdateNavigationTitleWithSwipedViewController = YES;
-
-//    swipableVC.buttonArray = ;
 
     self.window.rootViewController = swipableVC;
     [self.window makeKeyAndVisible];
+
     return YES;
 }
 
@@ -63,27 +81,20 @@
 }
 
 #pragma mark - RKSwipableViewControllerDataSource
-NSMutableArray *_vcArray;
-#define NUMBER_OF_SWIPABLE_VIEWS 8
 - (long)numberOfViewControllers:(RKSwipableViewController *)swipableViewController {
     return NUMBER_OF_SWIPABLE_VIEWS;
 }
 
 - (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController viewControllerAt:(long)index {
-    if(_vcArray == nil) {
-        _vcArray = [[NSMutableArray alloc] init];
-        for(int i=0; i<NUMBER_OF_SWIPABLE_VIEWS; i++) {
-            [_vcArray addObject:[NSNull null]];
-        }
-    }
-
+    // VC source should be initialized before execution path arrives at here.
     if(_vcArray[index] == [NSNull null]) {
         UIViewController *vc = [[UIViewController alloc] init];
         vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/16.0) alpha:1];
-        UILabel *label = [[UILabel alloc] initWithFrame:vc.view.frame];
-        label.text = swipableViewController.segmentTextList[index];
+        UILabel *label = [[UILabel alloc] initWithFrame:swipableViewController.view.frame];
+        label.text = _vcMenuTitles[index];
         label.textAlignment = NSTextAlignmentCenter;
         label.font = [UIFont systemFontOfSize:36];
+        label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [vc.view addSubview:label];
         vc.title = label.text;
         _vcArray[index] = vc;
@@ -92,9 +103,6 @@ NSMutableArray *_vcArray;
 }
 
 - (long)swipableViewController:(RKSwipableViewController *)swipableViewController indexOfViewController:(UIViewController *)viewController {
-    if(_vcArray == nil) {
-        _vcArray = [[NSMutableArray alloc] initWithCapacity:8];
-    }
     for(long i=0; i<_vcArray.count; i++) {
         if(_vcArray[i] == viewController)
             return i;
@@ -102,4 +110,7 @@ NSMutableArray *_vcArray;
     return NSNotFound;
 }
 
+- (NSString *)swipableViewController:(RKSwipableViewController *)swipableViewController segmentTextAt:(long)index {
+    return _vcMenuTitles[index];
+}
 @end
