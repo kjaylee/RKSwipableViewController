@@ -113,16 +113,6 @@
  
  
 - Tapping Tabs
-    - Changing Pages
-     I've set up the buttons so that they each have a tag number (left = 0).
-     And I've attached the function "tapSegmentButtonAction" to each button
-     So, when you tap a button, it checks the tag, and that's the index of
-     the controller you want in the viewControllerArray.  But, if it jumped
-     straight to it, you wouldn't get an understanding of the pages in between
-     and it wouldn't feel right.  So, I've constructed a loop that shows every
-     controller in viewControllerArray from where you are to where you have to
-     go.
- 
     - Moving the Slider
      When you click a tab, because it scrolls through the pages until it gets
      to the page you want, it calls "scrollViewDidScroll", which takes care of
