@@ -50,44 +50,44 @@ __Programmatically__ (preferred)
 3. implement RKSwipableViewControllerDataSource delegate
   	
 	```objc
-        - (long)numberOfViewControllers:(RKSwipableViewController *)swipableViewController {
-            return NUMBER_OF_SWIPABLE_VIEWS;
-        }
-
-        - (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController      
-                                    viewControllerAt:(long)index 
-        {
-            // VC source should be initialized before execution path arrives at here.
-            if(_vcArray[index] == [NSNull null]) {
-                UIViewController *vc = [[UIViewController alloc] init];
-                vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/16.0) alpha:1];
-                _vcArray[index] = vc;
-                UILabel *label = [[UILabel alloc] initWithFrame:swipableViewController.view.frame];
-                label.text = _vcMenuTitles[index];
-                label.textAlignment = NSTextAlignmentCenter;
-                label.font = [UIFont systemFontOfSize:36];
-                label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-                [vc.view addSubview:label];
-                vc.title = label.text;
-            }
-            return _vcArray[index];
-        }
-
-        - (long)swipableViewController:(RKSwipableViewController *)swipableViewController
-                 indexOfViewController:(UIViewController *)viewController 
-        {
-            for(long i=0; i<_vcArray.count; i++) {
-                if(_vcArray[i] == viewController)
-                    return i;
-            }
-            return NSNotFound;
-        }
-
-        - (NSString *)swipableViewController:(RKSwipableViewController *)swipableViewController 
-                                segmentTextAt:(long)index 
-        {
-            return _vcMenuTitles[index];
-        }
+	- (long)numberOfViewControllers:(RKSwipableViewController *)swipableViewController {
+	    return NUMBER_OF_SWIPABLE_VIEWS;
+	}
+	
+	- (UIViewController *)swipableViewController:(RKSwipableViewController *)swipableViewController      
+	                            viewControllerAt:(long)index 
+	{
+	    // VC source should be initialized before execution path arrives at here.
+	    if(_vcArray[index] == [NSNull null]) {
+	        UIViewController *vc = [[UIViewController alloc] init];
+	        vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/16.0) alpha:1];
+	        _vcArray[index] = vc;
+	        UILabel *label = [[UILabel alloc] initWithFrame:swipableViewController.view.frame];
+	        label.text = _vcMenuTitles[index];
+	        label.textAlignment = NSTextAlignmentCenter;
+	        label.font = [UIFont systemFontOfSize:36];
+	        label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+	        [vc.view addSubview:label];
+	        vc.title = label.text;
+	    }
+	    return _vcArray[index];
+	}
+	
+	- (long)swipableViewController:(RKSwipableViewController *)swipableViewController
+	         indexOfViewController:(UIViewController *)viewController 
+	{
+	    for(long i=0; i<_vcArray.count; i++) {
+	        if(_vcArray[i] == viewController)
+	            return i;
+	    }
+	    return NSNotFound;
+	}
+	
+	- (NSString *)swipableViewController:(RKSwipableViewController *)swipableViewController 
+	                        segmentTextAt:(long)index 
+	{
+	    return _vcMenuTitles[index];
+	}
 	```
 
 4. Use the custom class (or call it as the first controller from app delegate: see below)
