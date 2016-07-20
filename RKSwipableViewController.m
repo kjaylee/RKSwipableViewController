@@ -133,7 +133,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 - (void)setupSegmentButtons {
     // set sizes of segment container & swipable area (by UIPageController)
     CGRect segmentBounds = CGRectMake(0,
-                                      0,
+                                      -self.segmentButtonHeight,
                                       self.view.frame.size.width,
                                       self.segmentButtonHeight);
     segmentContainerScrollView = [[UIScrollView alloc] initWithFrame:segmentBounds];
@@ -190,7 +190,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     segmentContainerScrollView.clipsToBounds = YES;
     segmentContainerScrollView.backgroundColor = self.segmentContainerScrollViewBackgroundColor;
 
-    [self.view addSubview:segmentContainerScrollView];
+    [self.pageController.view addSubview:segmentContainerScrollView];
     self.pageController.view.clipsToBounds = NO;
     self.pageController.view.tag = 9999;
 
@@ -227,6 +227,38 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
         _pageController.view.translatesAutoresizingMaskIntoConstraints = NO;
 
         NSLayoutConstraint *c;
+//        c = [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+//                                         attribute:NSLayoutAttributeBottom
+//                                         relatedBy:NSLayoutRelationEqual
+//                                            toItem:_pageController.view
+//                                         attribute:NSLayoutAttributeTop
+//                                        multiplier:1
+//                                          constant:0];
+//        [_pageController.view addConstraint:c];
+//        c = [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+//                                         attribute:NSLayoutAttributeLeft
+//                                         relatedBy:NSLayoutRelationEqual
+//                                            toItem:_pageController.view
+//                                         attribute:NSLayoutAttributeLeft
+//                                        multiplier:1
+//                                          constant:0];
+//        [self.view addConstraint:c];
+//        c = [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+//                                         attribute:NSLayoutAttributeRight
+//                                         relatedBy:NSLayoutRelationEqual
+//                                            toItem:_pageController.view
+//                                         attribute:NSLayoutAttributeRight
+//                                        multiplier:1
+//                                          constant:0];
+//        [self.view addConstraint:c];
+//        c = [NSLayoutConstraint constraintWithItem:segmentContainerScrollView
+//                                         attribute:NSLayoutAttributeHeight
+//                                         relatedBy:NSLayoutRelationEqual
+//                                            toItem:nil
+//                                         attribute:NSLayoutAttributeNotAnAttribute
+//                                        multiplier:1
+//                                          constant:self.segmentButtonHeight];
+//        [self.view addConstraint:c];
         c = [NSLayoutConstraint constraintWithItem:_pageController.view
                                          attribute:NSLayoutAttributeTop
                                          relatedBy:NSLayoutRelationEqual
@@ -256,40 +288,6 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
                                          relatedBy:NSLayoutRelationEqual
                                             toItem:self.view
                                          attribute:NSLayoutAttributeBottom
-                                        multiplier:1
-                                          constant:0];
-        [self.view addConstraint:c];
-
-
-        c = [NSLayoutConstraint constraintWithItem:self.segmentContainerScrollView
-                                         attribute:NSLayoutAttributeTop
-                                         relatedBy:NSLayoutRelationEqual
-                                            toItem:self.navigationBar
-                                         attribute:NSLayoutAttributeBottom
-                                        multiplier:1
-                                          constant:0];
-        [self.view addConstraint:c];
-        c = [NSLayoutConstraint constraintWithItem:self.segmentContainerScrollView
-                                         attribute:NSLayoutAttributeHeight
-                                         relatedBy:NSLayoutRelationEqual
-                                            toItem:nil
-                                         attribute:NSLayoutAttributeNotAnAttribute
-                                        multiplier:1
-                                          constant:self.segmentButtonHeight];
-        [self.view addConstraint:c];
-        c = [NSLayoutConstraint constraintWithItem:self.segmentContainerScrollView
-                                         attribute:NSLayoutAttributeLeft
-                                         relatedBy:NSLayoutRelationEqual
-                                            toItem:self.view
-                                         attribute:NSLayoutAttributeLeft
-                                        multiplier:1
-                                          constant:0];
-        [self.view addConstraint:c];
-        c = [NSLayoutConstraint constraintWithItem:self.segmentContainerScrollView
-                                         attribute:NSLayoutAttributeRight
-                                         relatedBy:NSLayoutRelationEqual
-                                            toItem:self.view
-                                         attribute:NSLayoutAttributeRight
                                         multiplier:1
                                           constant:0];
         [self.view addConstraint:c];
