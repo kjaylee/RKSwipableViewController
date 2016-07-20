@@ -33,6 +33,7 @@ NSArray *_vcMenuTitles;
     _vcMenuTitles = [[NSArray alloc] initWithObjects: @"first",@"second",@"third",@"fourth",@"fifth",@"sixth",@"seventh",@"eighth",nil];
 
     RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
+    // customizing things
     swipableVC.isSegmentSizeFixed = NO;
     swipableVC.segmentButtonMinimumWidth = 50.0f;
     swipableVC.segmentButtonMarginWidth = 25.0f;

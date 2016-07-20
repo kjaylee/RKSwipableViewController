@@ -55,6 +55,7 @@
 		992F23C11985BDD500320CAA /* RKSwipableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RKSwipableViewController.m; sourceTree = SOURCE_ROOT; };
 		AC9711E41B9125EB0029ED16 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		AC9711E51B9125EB0029ED16 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		ACC108A81D3F76BF0000A908 /* RKSwipableViewController.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = RKSwipableViewController.podspec; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +135,7 @@
 				992F23941985BD6300320CAA /* InfoPlist.strings */,
 				992F23971985BD6300320CAA /* main.m */,
 				992F23991985BD6300320CAA /* RKSwipableViewController-Prefix.pch */,
+				ACC108A81D3F76BF0000A908 /* RKSwipableViewController.podspec */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
