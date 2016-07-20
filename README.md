@@ -1,12 +1,14 @@
-- Note from Kenial: This class is forked from https://github.com/cwRichardKim/RKSwipeBetweenViewControllers, 
-but it has been changed for dynamic page creation - I thought original class would be more suitable static content, 
-so decided to make it as another repo. However, with a respect for the original author, I will leave prefix RK for him :)
+from Kenial: This class is forked from https://github.com/cwRichardKim/RKSwipeBetweenViewControllers. 
+This has been updated in order to provide with dynamic page creation feature (ie. by using delegate), 
+there's no compatibility anymore. I might send pull requests to original repo, but I thought original class 
+might be more suitable static content, so decided to make it as another project. With a respect to the 
+original author, I left prefix 'RK'. Thanks for your great efforts, Richard :)
 
-And added some features like looping and scrollable fragment:
+I added some features like looping and scrollable fragment (above tab buttons) as well:
 
 ![demo](http://i.imgur.com/aUalMKK.gif)
 
-Updating README is needed...
+Below descriptions 
 
 
 
