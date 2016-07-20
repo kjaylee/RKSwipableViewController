@@ -2,7 +2,7 @@ NOTICE: This class is forked from https://github.com/cwRichardKim/RKSwipeBetween
 
 I added some features like looping, scrollable fragment (above tab buttons), navigation controller integration as well:
 
-![demo](http://imgur.com/wCzVnMp)
+<img src="http://i.imgur.com/wCzVnMp.gif" width="200">
 
 
 
@@ -29,22 +29,22 @@ __Programmatically__ (preferred)
 2. Initialize a RKSwipableViewController (Below is a sample implemented in AppDelegate. Class of `self` should declare RKSwipableViewControllerDataSource)
 
   	```objc
-	    RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
-	    // customizing things
-            swipableVC.isSegmentSizeFixed = NO;
-            swipableVC.segmentButtonMinimumWidth = 50.0f;
-            swipableVC.segmentButtonMarginWidth = 25.0f;
-            swipableVC.segmentButtonEdgeMarginWidth = 10.0f;
-            swipableVC.shouldSelectedButtonCentered = YES;
-            swipableVC.segmentButtonHeight = 44.0f;
-            swipableVC.segmentButtonBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
-            swipableVC.segmentButtonTextColor = [UIColor whiteColor];
-            swipableVC.selectionBarColor = [UIColor greenColor];
-            swipableVC.segmentContainerScrollViewBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
-            swipableVC.dataSource = self;
-            swipableVC.enablesScrollingOverEdge = YES;
-            swipableVC.isScrolledWhenTapSegment = YES;
-            swipableVC.doUpdateNavigationTitleWithSwipedViewController = YES;
+	RKSwipableViewController *swipableVC = [[RKSwipableViewController alloc] init];
+	// customizing things
+	swipableVC.isSegmentSizeFixed = NO;
+	swipableVC.segmentButtonMinimumWidth = 50.0f;
+	swipableVC.segmentButtonMarginWidth = 25.0f;
+	swipableVC.segmentButtonEdgeMarginWidth = 10.0f;
+	swipableVC.shouldSelectedButtonCentered = YES;
+	swipableVC.segmentButtonHeight = 44.0f;
+	swipableVC.segmentButtonBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
+	swipableVC.segmentButtonTextColor = [UIColor whiteColor];
+	swipableVC.selectionBarColor = [UIColor greenColor];
+	swipableVC.segmentContainerScrollViewBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
+	swipableVC.dataSource = self;
+	swipableVC.enablesScrollingOverEdge = YES;
+	swipableVC.isScrolledWhenTapSegment = YES;
+	swipableVC.doUpdateNavigationTitleWithSwipedViewController = YES;
 	```
 	
 3. implement RKSwipableViewControllerDataSource delegate
