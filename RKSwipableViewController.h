@@ -166,7 +166,11 @@
 @property (nonatomic, strong) UIPageViewController *pageController;
 @property (nonatomic, strong) UIScrollView *segmentContainerScrollView;
 @property (nonatomic, strong) UIColor *segmentContainerScrollViewBackgroundColor;
-@property (nonatomic, assign) BOOL enablesScrollingOverEdge;    //%%% enables scrolling end to other end
+// enables scrolling end to other end
+@property (nonatomic, assign) BOOL enablesScrollingOverEdge;
+// if YES, it scrolls to tapped segment.
+// CAUTION: if VC loading includes background tasks such as API calling, it might affect overall performance
+@property (nonatomic, assign) BOOL isScrolledWhenTapSegment;
 @property (nonatomic, assign) BOOL isSegmentSizeFixed;
 @property (nonatomic, assign) float segmentButtonWidth;
 @property (nonatomic, assign) float segmentButtonMinimumWidth;

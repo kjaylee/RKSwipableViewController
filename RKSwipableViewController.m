@@ -73,6 +73,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 
 - (void)initialize {
     self.enablesScrollingOverEdge = NO;
+    self.isScrolledWhenTapSegment = NO;
     self.isSegmentSizeFixed = NO;
     self.shouldSelectedButtonCentered = NO;
     self.segmentButtonHeight = 44.0f;
@@ -334,7 +335,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 //so there's a loop that shows every view controller in the array up to the one you selected
 //eg: if you're on page 1 and you click tab 3, then it shows you page 2 and then page 3
 - (void)tapSegmentButton:(UIButton *)button {
-    [self tapSegmentButton:button animated:NO];
+    [self tapSegmentButton:button animated:self.isScrolledWhenTapSegment];
 }
 
 - (void)tapSegmentButton:(UIButton *)button animated:(BOOL)animated {
