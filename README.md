@@ -97,14 +97,20 @@ __Programmatically__ (preferred)
   	self.window.rootViewController = navigationController;
   	[self.window makeKeyAndVisible];
   	```
+
 .
+
 .
+
   
 __StoryBoard__
 (Will be updated)
 
+
 .
+
 .
+
 
 
 ### Areas for Improvement / Involvement
