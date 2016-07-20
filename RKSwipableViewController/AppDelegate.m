@@ -38,13 +38,14 @@ NSArray *_vcMenuTitles;
     swipableVC.segmentButtonMarginWidth = 25.0f;
     swipableVC.segmentButtonEdgeMarginWidth = 10.0f;
     swipableVC.shouldSelectedButtonCentered = YES;
-    swipableVC.segmentButtonHeight = 60.0f;
-    swipableVC.segmentButtonBackgroundColor = [UIColor blackColor];
+    swipableVC.segmentButtonHeight = 44.0f;
+    swipableVC.segmentButtonBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
     swipableVC.segmentButtonTextColor = [UIColor whiteColor];
     swipableVC.selectionBarColor = [UIColor greenColor];
-    swipableVC.segmentContainerScrollViewBackgroundColor = [UIColor blackColor];
+    swipableVC.segmentContainerScrollViewBackgroundColor = [UIColor colorWithRed:0 green:0.4 blue:0.7 alpha:1];
     swipableVC.dataSource = self;
     swipableVC.enablesScrollingOverEdge = YES;
+    swipableVC.isScrolledWhenTapSegment = YES;
     swipableVC.doUpdateNavigationTitleWithSwipedViewController = YES;
 
     self.window.rootViewController = swipableVC;
@@ -90,6 +91,7 @@ NSArray *_vcMenuTitles;
     if(_vcArray[index] == [NSNull null]) {
         UIViewController *vc = [[UIViewController alloc] init];
         vc.view.backgroundColor = [UIColor colorWithWhite:1.0 - (index/16.0) alpha:1];
+        _vcArray[index] = vc;
         UILabel *label = [[UILabel alloc] initWithFrame:swipableViewController.view.frame];
         label.text = _vcMenuTitles[index];
         label.textAlignment = NSTextAlignmentCenter;
@@ -97,7 +99,16 @@ NSArray *_vcMenuTitles;
         label.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
         [vc.view addSubview:label];
         vc.title = label.text;
-        _vcArray[index] = vc;
+
+        if(index == 0) {
+            UIButton *button = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            button.frame = CGRectMake(0, 0, 200, 80);
+            [button setTitle:@"Push VC into navigation" forState:UIControlStateNormal];
+            [button addTarget:self action:@selector(tappedButton:) forControlEvents:UIControlEventTouchUpInside];
+            CGPoint center = CGPointMake(swipableViewController.view.frame.size.width/2, swipableViewController.view.frame.size.height/2+50);
+            button.center = center;
+            [vc.view addSubview:button];
+        }
     }
     return _vcArray[index];
 }
@@ -113,4 +124,14 @@ NSArray *_vcMenuTitles;
 - (NSString *)swipableViewController:(RKSwipableViewController *)swipableViewController segmentTextAt:(long)index {
     return _vcMenuTitles[index];
 }
+
+#pragma mark
+- (IBAction)tappedButton:(UIButton *)button {
+    UIViewController *vc = [[UIViewController alloc] init];
+    vc.view.backgroundColor = [UIColor colorWithRed:0 green:0.2 blue:0.2 alpha:1];
+    vc.title = @"Pushed VC";
+    UINavigationController *nvc = self.window.rootViewController;
+    [nvc pushViewController:vc animated:YES];
+}
+
 @end
