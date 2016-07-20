@@ -2,11 +2,11 @@ NOTICE: This class is forked from https://github.com/cwRichardKim/RKSwipeBetween
 
 I added some features like looping, scrollable fragment (above tab buttons), navigation controller integration as well:
 
-<img src="http://i.imgur.com/wCzVnMp.gif" width="300"> ([Original size video](https://dl.dropboxusercontent.com/u/14547225/_ext/RKSwipableViewController.m4v))
+<img src="http://i.imgur.com/wCzVnMp.gif" width="250"> ([Original size video link](https://dl.dropboxusercontent.com/u/14547225/_ext/RKSwipableViewController.m4v))
 
 Currently OnDemandKorea iOS app uses this class:
 
-- [ODK iOS app sample video](https://dl.dropboxusercontent.com/u/14547225/_ext/RKSwipableViewController_odk.m4v)
+- [ODK iOS app sample video link](https://dl.dropboxusercontent.com/u/14547225/_ext/RKSwipableViewController_odk.m4v)
 
 
 RKSwipableViewController
