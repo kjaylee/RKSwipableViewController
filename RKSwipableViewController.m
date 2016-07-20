@@ -192,7 +192,7 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
 
     [self.pageController.view addSubview:segmentContainerScrollView];
     self.pageController.view.clipsToBounds = NO;
-    self.pageController.view.tag = 9999;
+    self.pageController.view.tag = RK_PAGE_CONTROLLER_VIEW_TAG;
 
     /////////////////
     // setup selector
@@ -579,6 +579,41 @@ bool isSegmentScrolledOverBoundary = NO;    // flag that indicates "over boundar
     isPageScrollingFlag = NO;
     isSegmentScrolledOverBoundary = NO;
     doStopSegmentScrolling = NO;
+}
+
+@end
+
+
+
+@implementation UIView (RKSwipableViewController_FakePointInside)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        Method pointInside = class_getInstanceMethod([UIView class], @selector(pointInside:withEvent:));
+        Method originalPointInside = class_getInstanceMethod([UIView class], @selector(odk_originalPointInside:withEvent:));
+        Method fakePointInside = class_getInstanceMethod([UIView class], @selector(odk_fakePointInside:withEvent:));
+        method_setImplementation(originalPointInside, method_getImplementation(pointInside));
+        method_setImplementation(pointInside, method_getImplementation(fakePointInside));
+    });
+}
+
+- (BOOL)odk_originalPointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    return [self odk_originalPointInside:point withEvent:event];
+}
+
+- (BOOL)odk_fakePointInside:(CGPoint)point withEvent:(UIEvent *)event {
+    if([self odk_originalPointInside:point withEvent:event])
+        return YES;
+    // if Page Controller view
+    if(self.tag == RK_PAGE_CONTROLLER_VIEW_TAG) {
+        for(UIView *v in self.subviews) {
+            CGPoint converted = [v convertPoint:point fromView:self];
+            if([v odk_originalPointInside:converted withEvent:event])
+                return YES;
+        }
+    }
+    return NO;
 }
 
 @end
