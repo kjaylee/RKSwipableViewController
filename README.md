@@ -7,7 +7,7 @@
 It works as:
 
 <img src="http://i.imgur.com/wCzVnMp.gif" width="250"> 
-
+<br />
 ([Original size video link](https://dl.dropboxusercontent.com/u/14547225/_ext/RKSwipableViewController.m4v))
 
 Currently OnDemandKorea iOS app uses this class:
