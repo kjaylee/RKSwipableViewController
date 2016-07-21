@@ -18,8 +18,9 @@ RKSwipableViewController
 
 UIPageViewController and custom UISegmentedControl that scrollable and animated in synchronized manner. 
 
-##Pod
-	pod 'RKSwipableViewController'
+##Pod (I'm working on it!)
+	pod 'RKSwipableViewController', :git => 'https://github.com/ondemandkorea/RKSwipableViewController.git', :tag => '0.1.5'
+
 	
 
 ## how to use 
